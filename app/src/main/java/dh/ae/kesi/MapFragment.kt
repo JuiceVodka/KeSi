@@ -100,7 +100,7 @@ class MapFragment : Fragment() {
         binding.returnHomeButton.setOnClickListener {
             val transaction = requireActivity().supportFragmentManager.beginTransaction()
             val cameraFragment = CameraFragment()
-            transaction.replace(R.id.mainFrame, cameraFragment)
+            transaction.replace(R.id.fragmentFrame, cameraFragment)
             transaction.commit()
         }
     }

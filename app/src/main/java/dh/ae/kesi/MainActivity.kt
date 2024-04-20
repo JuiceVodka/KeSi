@@ -118,12 +118,4 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
         Log.d("test", "menjam fragment")
         fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)?.commit()
     }
-
-    override fun onStart() {
-        super.onStart()
-        val transaction = supportFragmentManager.beginTransaction()
-        val mapFragment = MapFragment()
-        transaction.replace(R.id.mainFrame, mapFragment)
-        transaction.commit()
-    }
 }
