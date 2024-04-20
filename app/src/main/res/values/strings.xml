@@ -1,5 +1,16 @@
 <resources>
     <string name="app_name">KeSi</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="ok">OK</string>
+    <string name="permission_location_rationale">This application needs location permission to be able to function.</string>
+    <string name="maps_button">Submit</string>
+    <string name="submitScore">Your Score: %d</string>
+    <string name="return_home_button">Return Home button</string>
+    <string name="item_1">Item 1</string>
+    <string name="item_2">Item 2</string>
+    <string name="item_3">Item 3</string>
+    <string name="item_4">Item 4</string>
+    <string name="item_5">Item 5</string>
+    <string name="leaderboard">Leaderboard</string>
+    <string name="leaderboardItem">User: %s Score: %s</string>
 </resources>

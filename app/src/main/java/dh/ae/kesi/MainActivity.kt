@@ -8,4 +8,12 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
     }
+
+    override fun onStart() {
+        super.onStart()
+        val transaction = supportFragmentManager.beginTransaction()
+        val mapFragment = MapFragment()
+        transaction.replace(R.id.mainFrame, mapFragment)
+        transaction.commit()
+    }
 }

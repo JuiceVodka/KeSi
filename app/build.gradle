@@ -1,6 +1,7 @@
 plugins {
     id 'com.android.application'
     id 'org.jetbrains.kotlin.android'
+    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
 }
 
 android {
@@ -14,6 +15,19 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        def mapsApiKey = "MAPS_API_KEY_NOT_FOUND"
+        if (project.hasProperty("MAPS_API_KEY")) {
+            mapsApiKey = MAPS_API_KEY
+        }
+        buildConfigField 'String', 'MAPS_API_KEY', "\"${mapsApiKey}\""
+    }
+
+    viewBinding {
+        enabled = true
+    }
+
+    dataBinding {
+        enabled = true
     }
 
     buildTypes {
