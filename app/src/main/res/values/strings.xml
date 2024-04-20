@@ -1,7 +1,6 @@
 <resources>
     <string name="app_name">KeSi</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="ok">OK</string>
     <string name="permission_location_rationale">This application needs location permission to be able to function.</string>
     <string name="maps_button">Submit</string>
     <string name="submitScore">Your Score: %d</string>
@@ -13,4 +12,9 @@
     <string name="item_5">Item 5</string>
     <string name="leaderboard">Leaderboard</string>
     <string name="leaderboardItem">User: %s Score: %s</string>
+    <string name="permission_location_rationale">The app needs location access to run</string>
+    <string name="ok">Ok</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+    <string name="back4app_app_id">oRbz7DKOAUF0XR3GEu4OxnYNbwi5S5cVy6pO9Dbk</string>
+    <string name="back4app_client_key">OIn8Ddtjp8ZnV6jlIXeC7KZqwWvj2TixCwnImfGM</string>
 </resources>
