@@ -8,6 +8,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -101,6 +102,7 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
 
     }
     override fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?, img4: String?, img5: String?) {
+        Log.d("test", "menjam fragment")
         val bundle = Bundle()
         bundle.putString("objectId", objectId)
         bundle.putString("lat", lat)
@@ -113,7 +115,7 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
 
         val entryFragment = EntryFragment()
         entryFragment.arguments = bundle
-
+        Log.d("test", "menjam fragment")
         fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)?.commit()
     }
 }
