@@ -14,8 +14,10 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.gms.location.FusedLocationProviderClient
 import dh.ae.kesi.databinding.ActivityMainBinding
+import dh.ae.kesi.ui.adapters.LocationAdapter
+import dh.ae.kesi.ui.fragments.ListFragment
 
-class MainActivity : AppCompatActivity(), CameraFragment.CamFragmentInterface{
+class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface {
     private lateinit var binding : ActivityMainBinding
     private var fragmentTransaction : FragmentTransaction? = null
 
@@ -84,10 +86,11 @@ class MainActivity : AppCompatActivity(), CameraFragment.CamFragmentInterface{
 
         val camFragment = CameraFragment()
 
+
         fragmentTransaction?.add(R.id.fragmentFrame, camFragment)
         fragmentTransaction?.commit()
-    }
 
+    }
     override fun switchToListFragment() {
         fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction!!.setCustomAnimations(androidx.appcompat.R.anim.abc_slide_in_bottom, androidx.appcompat.R.anim.abc_slide_out_top)
@@ -96,5 +99,21 @@ class MainActivity : AppCompatActivity(), CameraFragment.CamFragmentInterface{
         fragmentTransaction?.replace(R.id.fragmentFrame, listFragment)
         fragmentTransaction?.commit()
 
+    }
+    override fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?, img4: String?, img5: String?) {
+        val bundle = Bundle()
+        bundle.putString("objectId", objectId)
+        bundle.putString("lat", lat)
+        bundle.putString("long", long)
+        bundle.putString("img1", img1)
+        bundle.putString("img2", img2)
+        bundle.putString("img3", img3)
+        bundle.putString("img4", img4)
+        bundle.putString("img5", img5)
+
+        val entryFragment = EntryFragment()
+        entryFragment.arguments = bundle
+
+        fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)?.commit()
     }
 }
