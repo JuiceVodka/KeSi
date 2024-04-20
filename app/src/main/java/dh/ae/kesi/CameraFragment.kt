@@ -3,14 +3,20 @@ package dh.ae.kesi
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.content.ContentValues
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.icu.text.SimpleDateFormat
 import android.location.Location
 import android.net.Uri
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.provider.Settings
+import android.util.Base64
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -18,11 +24,18 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
+import com.parse.ParseObject
 import dh.ae.kesi.databinding.FragmentCameraBinding
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.IOException
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class CameraFragment : Fragment() {
@@ -56,9 +69,12 @@ class CameraFragment : Fragment() {
         binding = FragmentCameraBinding.inflate(inflater, container, false)
 
         binding.takePic.setOnClickListener {
-            takePhoto()
+            dispatchTakePictureIntent()
         }
-        //Log.d("CAMERA", picCount.toString())
+
+        binding.postData.setOnClickListener {
+            postToDb()
+        }
 
         return binding.root
     }
@@ -108,49 +124,120 @@ class CameraFragment : Fragment() {
         activity?.recreate()
     }
 
+var photoFile :File? = null
+    private fun dispatchTakePictureIntent() {
+        val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+        // Create the File where the photo should go
+        photoFile = createImageFile()
 
-    fun takePhoto(){
-        if (!MainActivity.CameraPermissionHelper.hasCameraPermission(requireActivity())) {
-            MainActivity.CameraPermissionHelper.requestCameraPermission(requireActivity())
+        // Continue only if the File was successfully created
+        if(photoFile != null){
+            val photoURI: Uri = FileProvider.getUriForFile(
+                requireContext(),
+                BuildConfig.APPLICATION_ID + ".provider", // Your package
+                photoFile!!)
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
         }
 
-        Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
-            takePictureIntent.resolveActivity(requireActivity().packageManager)?.also {
-//                    imageUri = getImageUri(context, imageFile)
-//                    takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
-                startActivityForResult(takePictureIntent, 1)
-            }
+        if (requireContext().getPackageManager().hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY)) {
+            // Start the image capture intent to take photo
+            startActivityForResult(takePictureIntent, 1)
+        }
+
+    }
+
+
+    @SuppressLint("SimpleDateFormat")
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        // Create an image file name
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = requireContext().getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            // Save a file: path for use with ACTION_VIEW intents
+            val currentPhotoPath = absolutePath
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
+            val imageBitmap =  BitmapFactory.decodeFile(photoFile!!.absolutePath)
 
-            val image = data?.extras?.get("data") as Bitmap
-            picArray.add(image)
-            Log.d("CAMERA", image.toString())
-            Log.d("CAMERA", picCount.toString())
+            picArray.add(imageBitmap)
 
-            if(picCount < 5){
+            if(picCount < 4){
                 picCount++
-                takePhoto()
+                dispatchTakePictureIntent()
             }else{
-                binding.firstLayout.visibility = View.GONE
-                binding.secondLayout.visibility = View.VISIBLE}
+                binding.imageView1.setImageBitmap(picArray[0])
+                binding.imageView2.setImageBitmap(picArray[1])
+                binding.imageView3.setImageBitmap(picArray[2])
+                binding.imageView4.setImageBitmap(picArray[3])
+                binding.imageView5.setImageBitmap(picArray[4])
+            }
 
-            //binding.firstLayout.visibility = View.GONE
-            //binding.secondLayout.visibility = View.VISIBLE
-
-            /*image.apply {
-                view?.findViewById<ImageView>(R.id.memoImage)?.setImageBitmap(this)
-                // create rounded corners bitmap
-                view?.findViewById<ImageView>(R.id.memoImage)?.setImageBitmap(toRoundedCorners(8F))
-            }*/
-
-
-
+            //show second UI
+            binding.firstLayout.visibility = View.GONE
+            binding.secondLayout.visibility = View.VISIBLE
         }
+    }
+
+
+    fun encodeImgToBase64(image: Bitmap) :String{
+        val byteStream = ByteArrayOutputStream()
+        image.compress(Bitmap.CompressFormat.JPEG,50,byteStream)
+        val byteArr = byteStream.toByteArray()
+        val imgString = Base64.encodeToString(byteArr, Base64.NO_WRAP)
+        return imgString
+    }
+
+    fun postToDb(){
+        Log.d(TAG, "SHARING")
+        val toBase = ParseObject("Locations")
+
+        val sharedPreference =  requireActivity().getSharedPreferences("User_data", Context.MODE_PRIVATE)
+        val uname = sharedPreference.getString("uname", "Anonymous")
+        if (uname != null) {
+            toBase.put("username", uname)
+        }else{
+            toBase.put("username", "Anonymous")
+        }
+
+        toBase.put("img1", encodeImgToBase64(picArray[0]))
+        toBase.put("img2", encodeImgToBase64(picArray[1]))
+        toBase.put("img3", encodeImgToBase64(picArray[2]))
+        toBase.put("img4", encodeImgToBase64(picArray[3]))
+        toBase.put("img5", encodeImgToBase64(picArray[4]))
+
+        getLoc()
+
+        if(lat != null && long != null){
+            toBase.put("lat", lat.toString())
+            toBase.put("long", long.toString())
+        }else{
+            Toast.makeText(activity, "Turn on location to post your KeSi", Toast.LENGTH_LONG)
+                .show()
+            return
+        }
+
+        toBase.saveInBackground {
+            if (it != null) {
+                it.localizedMessage?.let { message -> Log.e(TAG, message) }
+            } else {
+                Log.d(TAG, toBase.toString())
+                Log.d(TAG, "Object saved.")
+            }
+        }
+        Toast.makeText(activity, "Photos and location posted!", Toast.LENGTH_LONG)
+            .show()
+        picCount = 0
+        picArray.clear()
+        binding.firstLayout.visibility = View.VISIBLE
+        binding.secondLayout.visibility = View.GONE
     }
 
     fun getLocationPrem(){
@@ -165,7 +252,6 @@ class CameraFragment : Fragment() {
             if (ActivityCompat.shouldShowRequestPermissionRationale(requireActivity(), Manifest.permission
                     .ACCESS_COARSE_LOCATION) || ActivityCompat.shouldShowRequestPermissionRationale (requireActivity(),
                     Manifest.permission.ACCESS_FINE_LOCATION)) {
-                Log.d("Debug", "snekbar")
                 Snackbar.make(
                     binding.root,
                     R.string.permission_location_rationale,
@@ -199,14 +285,11 @@ class CameraFragment : Fragment() {
                 lat = location?.latitude
                 long = location?.longitude
 
-
-                //TODO do some check for if location os off
+                Log.d(TAG, lat.toString() + "  " + long.toString())
             }
     }
 
-
-
     companion object {
-
+        val TAG = "CameraFragment"
     }
 }

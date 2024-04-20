@@ -80,11 +80,11 @@ class MainActivity : AppCompatActivity() {
 
         //initialise camera fragment
         fragmentTransaction = supportFragmentManager.beginTransaction()
-        val camFragment = CameraFragment()
+        fragmentTransaction!!.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
 
+        val camFragment = CameraFragment()
 
         fragmentTransaction?.add(R.id.fragmentFrame, camFragment)
         fragmentTransaction?.commit()
-
     }
 }
