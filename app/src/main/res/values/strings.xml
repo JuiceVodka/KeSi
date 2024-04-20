@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">KeSi</string>
     <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="back4app_server_url">https://parseapi.back4app.com/</string>
+    <string name="back4app_app_id">8KydTPwrWmjznR37vqKUpYxTUWaUKY8M3kjMOd0d</string>
+    <string name="back4app_client_key">HZESE8rekv414LXm7i5i8blokq90ffBHo0EsMX75</string>
+
 </resources>
