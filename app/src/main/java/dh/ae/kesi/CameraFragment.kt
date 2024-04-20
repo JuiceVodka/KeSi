@@ -7,8 +7,7 @@ import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.*
 import android.icu.text.SimpleDateFormat
 import android.location.Location
 import android.net.Uri
@@ -40,6 +39,11 @@ import kotlin.collections.ArrayList
 
 class CameraFragment : Fragment() {
 
+    public interface CamFragmentInterface{
+        fun switchToListFragment()
+    }
+
+
     private lateinit var binding : FragmentCameraBinding
 
     var picCount :Int = 0
@@ -50,13 +54,14 @@ class CameraFragment : Fragment() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
+    private lateinit var mainInter:CamFragmentInterface
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
         getLocationPrem()
         getLoc()
-
-
+        mainInter = activity as CamFragmentInterface
     }
 
 
@@ -74,6 +79,10 @@ class CameraFragment : Fragment() {
 
         binding.postData.setOnClickListener {
             postToDb()
+        }
+
+        binding.goToListFragment.setOnClickListener {
+            mainInter.switchToListFragment()
         }
 
         return binding.root
@@ -126,6 +135,10 @@ class CameraFragment : Fragment() {
 
 var photoFile :File? = null
     private fun dispatchTakePictureIntent() {
+        //request camera permission if not granted
+        if (!MainActivity.CameraPermissionHelper.hasCameraPermission(requireActivity())) {
+            MainActivity.CameraPermissionHelper.requestCameraPermission(requireActivity())
+        }
         val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
         // Create the File where the photo should go
         photoFile = createImageFile()
@@ -167,17 +180,17 @@ var photoFile :File? = null
         if (requestCode == 1 && resultCode == Activity.RESULT_OK) {
             val imageBitmap =  BitmapFactory.decodeFile(photoFile!!.absolutePath)
 
-            picArray.add(imageBitmap)
+            picArray.add(Bitmap.createScaledBitmap(imageBitmap, 700, 900, false))
 
             if(picCount < 4){
                 picCount++
                 dispatchTakePictureIntent()
             }else{
-                binding.imageView1.setImageBitmap(picArray[0])
-                binding.imageView2.setImageBitmap(picArray[1])
-                binding.imageView3.setImageBitmap(picArray[2])
-                binding.imageView4.setImageBitmap(picArray[3])
-                binding.imageView5.setImageBitmap(picArray[4])
+                binding.imageView1.setImageBitmap(picArray[0].toRoundedCorners(40F))
+                binding.imageView2.setImageBitmap(picArray[1].toRoundedCorners(40F))
+                binding.imageView3.setImageBitmap(picArray[2].toRoundedCorners(40F))
+                binding.imageView4.setImageBitmap(picArray[3].toRoundedCorners(40F))
+                binding.imageView5.setImageBitmap(picArray[4].toRoundedCorners(40F))
             }
 
             //show second UI
@@ -189,10 +202,36 @@ var photoFile :File? = null
 
     fun encodeImgToBase64(image: Bitmap) :String{
         val byteStream = ByteArrayOutputStream()
-        image.compress(Bitmap.CompressFormat.JPEG,50,byteStream)
+        image.compress(Bitmap.CompressFormat.JPEG,100,byteStream)
         val byteArr = byteStream.toByteArray()
         val imgString = Base64.encodeToString(byteArr, Base64.NO_WRAP)
         return imgString
+    }
+
+    fun Bitmap.toRoundedCorners(
+        cornerRadius: Float = 25F
+    ):Bitmap?{
+        val bitmap = Bitmap.createBitmap(
+            width, // width in pixels
+            height, // height in pixels
+            Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+
+        // path to draw rounded corners bitmap
+        val path = Path().apply {
+            addRoundRect(
+                RectF(0f,0f,width.toFloat(),height.toFloat()),
+                cornerRadius,
+                cornerRadius,
+                Path.Direction.CCW
+            )
+        }
+        canvas.clipPath(path)
+
+        // draw the rounded corners bitmap on canvas
+        canvas.drawBitmap(this,0f,0f,null)
+        return bitmap
     }
 
     fun postToDb(){

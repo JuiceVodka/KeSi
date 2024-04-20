@@ -15,7 +15,7 @@ import androidx.fragment.app.FragmentTransaction
 import com.google.android.gms.location.FusedLocationProviderClient
 import dh.ae.kesi.databinding.ActivityMainBinding
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), CameraFragment.CamFragmentInterface{
     private lateinit var binding : ActivityMainBinding
     private var fragmentTransaction : FragmentTransaction? = null
 
@@ -86,5 +86,15 @@ class MainActivity : AppCompatActivity() {
 
         fragmentTransaction?.add(R.id.fragmentFrame, camFragment)
         fragmentTransaction?.commit()
+    }
+
+    override fun switchToListFragment() {
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction!!.setCustomAnimations(androidx.appcompat.R.anim.abc_slide_in_bottom, androidx.appcompat.R.anim.abc_slide_out_top)
+
+        val listFragment = ListFragment()
+        fragmentTransaction?.replace(R.id.fragmentFrame, listFragment)
+        fragmentTransaction?.commit()
+
     }
 }

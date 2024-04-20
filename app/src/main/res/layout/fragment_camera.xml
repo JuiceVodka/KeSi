@@ -29,6 +29,15 @@
             app:layout_constraintEnd_toEndOf="parent"
 
             />
+
+        <androidx.appcompat.widget.AppCompatButton
+            android:id="@+id/goToListFragment"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:text="locations"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Layout for taking additional pictures and posting your picture -->
