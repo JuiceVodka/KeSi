@@ -10,4 +10,8 @@
     <color name="gold">#FFD700</color>
     <color name="silver">#C0C0C0</color>
     <color name="bronze">#CD7F32</color>
+    <color name="goldTransparent">#80FFD700</color>
+    <color name="silverTransparent">#80C0C0C0</color>
+    <color name="bronzeTransparent">#80CD7F32</color>
+    <color name="whiteTransparent">#80FFFFFF</color>
 </resources>
