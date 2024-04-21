@@ -22,7 +22,7 @@ import android.graphics.Shader
 
 class LocationAdapter(private val locs: MutableList<ParseObject>?) : RecyclerView.Adapter<LocationAdapter.CardViewHolder?>() {
     interface locationClickListener{
-        fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?, img4: String?, img5: String?)
+        fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?)
     }
 
     var clickListener :locationClickListener? = null
@@ -71,7 +71,7 @@ class LocationAdapter(private val locs: MutableList<ParseObject>?) : RecyclerVie
                 }catch(e: ClassCastException){
                     throw ClassCastException(v!!.context.toString() + " doesnt implement listListener")
                 }
-                clickListener?.detailClick(locs?.get(i)?.objectId, locs?.get(i)?.getString("username"), locs?.get(i)?.getString("lat"),locs?.get(i)?.getString("long"),locs?.get(i)?.getString("img1"),locs?.get(i)?.getString("img2"),locs?.get(i)?.getString("img3"),locs?.get(i)?.getString("img4"),locs?.get(i)?.getString("img5"))
+                clickListener?.detailClick(locs?.get(i)?.objectId, locs?.get(i)?.getString("username"), locs?.get(i)?.getString("lat"),locs?.get(i)?.getString("long"),locs?.get(i)?.getString("img1"),locs?.get(i)?.getString("img2"),locs?.get(i)?.getString("img3"))
             }
         })
     }
