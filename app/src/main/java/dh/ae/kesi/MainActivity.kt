@@ -2,6 +2,7 @@ package dh.ae.kesi
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -20,6 +21,7 @@ import dh.ae.kesi.ui.fragments.ListFragment
 class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface {
     private lateinit var binding : ActivityMainBinding
     private var fragmentTransaction : FragmentTransaction? = null
+    private var objId :String? = null
 
     /** Helper to ask camera permission.  */
     object CameraPermissionHelper {
@@ -102,6 +104,7 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
     }
     override fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?, img4: String?, img5: String?) {
         Log.d("test", "menjam fragment")
+        fragmentTransaction = supportFragmentManager.beginTransaction()
         val bundle = Bundle()
         bundle.putString("objectId", objectId)
         bundle.putString("lat", lat)
@@ -114,8 +117,10 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
 
         val entryFragment = EntryFragment()
         entryFragment.arguments = bundle
+
         Log.d("test", "menjam fragment")
-        fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)?.commit()
+        fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)
+        fragmentTransaction?.commit()
     }
 
     override fun onStart() {
