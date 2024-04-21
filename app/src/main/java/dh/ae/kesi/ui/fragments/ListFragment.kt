@@ -66,7 +66,7 @@ class ListFragment : Fragment() {
                     val posterId = i.objectId
                     val posterValInPrefs = sharedPreference?.getBoolean(posterId, false)
                     if (posterValInPrefs == true){
-                        _locations.removeAt(_locations.indexOf(i))
+                        iterator.remove()
                     }
                 }
 
