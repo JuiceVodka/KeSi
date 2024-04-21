@@ -92,11 +92,13 @@ tools:context=".SplashScreen"
         android:layout_height="wrap_content"
         android:id="@+id/unameField"
         android:hint="Enter your username"
+        android:textSize="18sp"
+        android:padding="10dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:background="@android:color/white"/>
+        android:background="@drawable/back2" />
 
     <ImageView
         android:id="@+id/button_confirm"
