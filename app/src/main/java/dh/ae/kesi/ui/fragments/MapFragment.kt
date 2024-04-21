@@ -14,7 +14,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.google.android.gms.location.FusedLocationProviderClient
@@ -310,8 +309,6 @@ class MapFragment : Fragment() {
             }
             toggleVisibility(score)
         }
-        Toast.makeText(activity, "Location submitted!", Toast.LENGTH_LONG)
-            .show()
     }
 
     private fun addDotedLine(

@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
@@ -8,9 +9,11 @@
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/drawable/rounded.xml" value="0.219" />
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/drawable/rounded_black.xml" value="0.219" />
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/drawable/rounded_image_background.xml" value="0.219" />
+        <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/drawable/rounded_silver_score.xml" value="0.219" />
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/layout/activity_main.xml" value="0.11302083333333333" />
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/layout/activity_splash_screen.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/layout/fragment_camera.xml" value="0.1" />
+        <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/layout/fragment_entry.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/layout/fragment_list.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/layout/fragment_post.xml" value="0.25416666666666665" />
         <entry key="..\:/Users/Niko/Desktop/dragonhack/KeSi/app/src/main/res/layout/fragment_score.xml" value="0.1" />
