@@ -1,0 +1,7 @@
+<shape xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="rectangle">
+    <stroke
+        android:width="2dp"
+        android:color="#FFFFFF"/> <!-- Set the color to white -->
+    <corners android:radius="25dp"/> <!-- Set the corner radius same as cardCornerRadius -->
+</shape>
