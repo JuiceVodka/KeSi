@@ -104,7 +104,7 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
         fragmentTransaction?.commit()
 
     }
-    override fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?, img4: String?, img5: String?) {
+    override fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?) {
         Log.d("test", "menjam fragment")
         fragmentTransaction = supportFragmentManager.beginTransaction()
         val bundle = Bundle()
@@ -114,8 +114,6 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
         bundle.putString("img1", img1)
         bundle.putString("img2", img2)
         bundle.putString("img3", img3)
-        bundle.putString("img4", img4)
-        bundle.putString("img5", img5)
 
         val entryFragment = EntryFragment()
         entryFragment.arguments = bundle
