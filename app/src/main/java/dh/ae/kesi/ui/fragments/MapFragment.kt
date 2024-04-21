@@ -1,4 +1,4 @@
-package dh.ae.kesi
+package dh.ae.kesi.ui.fragments
 
 import android.Manifest
 import android.app.AlertDialog
@@ -15,7 +15,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -31,7 +30,9 @@ import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
+import dh.ae.kesi.R
 import dh.ae.kesi.databinding.FragmentMapBinding
+
 class MapFragment : Fragment() {
 
     data class LeaderboardEntry(val userName: String, val score: Int)
@@ -111,7 +112,6 @@ class MapFragment : Fragment() {
             builder.setTitle("Location")
             builder.setMessage("Do you want to submit this location?")
             builder.setPositiveButton("Yes") { _, _ ->
-//                removeListeners()
                 showResults()
             }
             builder.setNegativeButton("No") { _, _ ->

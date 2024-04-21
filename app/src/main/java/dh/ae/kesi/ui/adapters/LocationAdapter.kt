@@ -1,7 +1,5 @@
 package dh.ae.kesi.ui.adapters
 import android.annotation.SuppressLint
-import android.content.Intent
-import android.os.Bundle
 import dh.ae.kesi.R
 import android.view.LayoutInflater
 import android.view.View
@@ -10,8 +8,6 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.parse.ParseObject
 import android.util.Log
-import android.widget.Toast
-import dh.ae.kesi.EntryFragment
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.BitmapShader
@@ -24,7 +20,7 @@ import android.graphics.Paint
 import android.graphics.Shader
 
 
-class LocationAdapter(private val shrooms: List<ParseObject>?) : RecyclerView.Adapter<LocationAdapter.CardViewHolder?>() {
+class LocationAdapter(private val locs: MutableList<ParseObject>?) : RecyclerView.Adapter<LocationAdapter.CardViewHolder?>() {
     interface locationClickListener{
         fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?, img4: String?, img5: String?)
     }
@@ -43,21 +39,21 @@ class LocationAdapter(private val shrooms: List<ParseObject>?) : RecyclerView.Ad
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CardViewHolder {
         // have a CardViewHolder created when needed
-        val view = LayoutInflater.from(parent.context).inflate(R.layout.shrooms_layout, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.locs_layout, parent, false)
         return CardViewHolder(view)
     }
 
     override fun getItemCount(): Int {
-        return shrooms?.size ?: 0
+        return locs?.size ?: 0
     }
 
     override fun onBindViewHolder(viewHolder: CardViewHolder, @SuppressLint("RecyclerView") i: Int) {
-        Log.d("test", shrooms?.get(i)?.getString("username").toString())
-        viewHolder.itemTitle?.text = shrooms?.get(i)?.getString("username") + " posted a KeSi. Take a guess!"
+        Log.d("test", locs?.get(i)?.getString("username").toString())
+        viewHolder.itemTitle?.text = locs?.get(i)?.getString("username") + " posted a KeSi. Take a guess!"
         // Assuming you have the Base64 encoded string stored in a variable called base64Image
 
         // Decode the Base64 string into a byte array
-        val decodedBytes = Base64.decode(shrooms?.get(i)?.getString("img1"), Base64.DEFAULT)
+        val decodedBytes = Base64.decode(locs?.get(i)?.getString("img1"), Base64.DEFAULT)
 
         // Convert the byte array into a Bitmap
         val bitmap = BitmapFactory.decodeByteArray(decodedBytes, 0, decodedBytes.size)
@@ -75,7 +71,7 @@ class LocationAdapter(private val shrooms: List<ParseObject>?) : RecyclerView.Ad
                 }catch(e: ClassCastException){
                     throw ClassCastException(v!!.context.toString() + " doesnt implement listListener")
                 }
-                clickListener?.detailClick(shrooms?.get(i)?.objectId, shrooms?.get(i)?.getString("username"), shrooms?.get(i)?.getString("lat"),shrooms?.get(i)?.getString("long"),shrooms?.get(i)?.getString("img1"),shrooms?.get(i)?.getString("img2"),shrooms?.get(i)?.getString("img3"),shrooms?.get(i)?.getString("img4"),shrooms?.get(i)?.getString("img5"))
+                clickListener?.detailClick(locs?.get(i)?.objectId, locs?.get(i)?.getString("username"), locs?.get(i)?.getString("lat"),locs?.get(i)?.getString("long"),locs?.get(i)?.getString("img1"),locs?.get(i)?.getString("img2"),locs?.get(i)?.getString("img3"),locs?.get(i)?.getString("img4"),locs?.get(i)?.getString("img5"))
             }
         })
     }

@@ -5,7 +5,7 @@ import com.parse.ParseObject
 import com.parse.ParseQuery
 
 class LocationRepository {
-    fun getAllLocations(callback: (List<ParseObject>?, Exception?) -> Unit) {
+    fun getAllLocations(callback: (MutableList<ParseObject>?, Exception?) -> Unit) {
         Log.d("test", "querying")
         val query = ParseQuery.getQuery<ParseObject>("Locations")
         query.findInBackground { locations, e ->

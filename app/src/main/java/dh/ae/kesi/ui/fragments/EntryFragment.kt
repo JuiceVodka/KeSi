@@ -1,4 +1,4 @@
-package dh.ae.kesi
+package dh.ae.kesi.ui.fragments
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -6,17 +6,11 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.os.Bundle
-import android.text.style.UpdateLayout
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.google.android.gms.maps.model.LatLng
-import com.parse.GetCallback
-import com.parse.ParseException
-import com.parse.ParseObject
-import com.parse.ParseQuery
 
 import dh.ae.kesi.databinding.FragmentEntryBinding
 import java.util.Base64.getDecoder
@@ -29,7 +23,7 @@ class EntryFragment : Fragment() {
 
     private lateinit var binding : FragmentEntryBinding
     private var myBooleanArray:BooleanArray = booleanArrayOf(false, false, false, false)
-    private lateinit var mainActivity :EntryFragmentListener
+    private lateinit var mainActivity : EntryFragmentListener
     private var mult :Double = 1.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
