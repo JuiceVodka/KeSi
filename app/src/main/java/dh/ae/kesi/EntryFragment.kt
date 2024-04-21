@@ -15,9 +15,13 @@ import com.google.android.gms.maps.model.LatLng
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.ImageView
+import android.widget.LinearLayout
+import androidx.core.view.marginLeft
+import androidx.core.view.marginStart
 
 import dh.ae.kesi.databinding.FragmentEntryBinding
 import java.util.Base64.getDecoder
+import kotlin.math.round
 
 class EntryFragment : Fragment() {
 
@@ -41,6 +45,9 @@ class EntryFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentEntryBinding.inflate(layoutInflater)
+        //get screen width
+        val displayMetrics = resources.displayMetrics.xdpi
+
 
         val objectId = arguments?.getString("objectId")
         val img1String = arguments?.getString("img1")
@@ -55,15 +62,24 @@ class EntryFragment : Fragment() {
 
         Log.d("test", objectId.toString())
 
-        binding.imageView1.setImageBitmap(bitmaps[0])
+
+
+        binding.imageView1.setImageBitmap(bitmaps[0].toRoundedCorners(40F))
+        val calc = displayMetrics/2 - binding.imageView1.width/2
+        val layout = binding.imageView1.layoutParams as LinearLayout.LayoutParams
+        layout.setMargins(calc.toInt(), 0, 0, 0)
+        binding.imageView1.layoutParams = layout
+
+
+
+
+
 
         binding.imageView2.setOnClickListener {
             if (!myBooleanArray[0]) {
                 bitmaps[1].apply {
                     //with rounded corners
                     crossfade(binding.imageView2, this)
-                    binding.imageView2.setImageBitmap(toRoundedCorners(40F))
-                    mult-=0.1
                 }
                 myBooleanArray[0] = true
             }
@@ -73,20 +89,20 @@ class EntryFragment : Fragment() {
                 bitmaps[2].apply {
                     //with rounded corners
                     crossfade(binding.imageView3, this)
-                    binding.imageView3.setImageBitmap(toRoundedCorners(40F))
-                    mult-=0.1
+                    val calc = displayMetrics/2 - binding.imageView3.width/2
+                    val layout = binding.imageView3.layoutParams as LinearLayout.LayoutParams
+                    layout.setMargins(calc.toInt(), 0, 0, 0)
+                    binding.imageView3.layoutParams = layout
                 }
                 myBooleanArray[1] = true
             }
 
         }
-        binding.imageView4.setOnClickListener {
+        /*binding.imageView4.setOnClickListener {
             if (!myBooleanArray[2]) {
                 bitmaps[3].apply {
                     //with rounded corners
                     crossfade(binding.imageView4, this)
-                    binding.imageView4.setImageBitmap(toRoundedCorners(40F))
-                    mult-=0.1
                 }
                 myBooleanArray[2] = true
             }
@@ -97,12 +113,14 @@ class EntryFragment : Fragment() {
                 bitmaps[4].apply {
                     //with rounded corners
                     crossfade(binding.imageView5, this)
-                    binding.imageView5.setImageBitmap(toRoundedCorners(40F))
-                    mult-=0.1
+                    val calc = displayMetrics/2 - binding.imageView5.width/2
+                    val layout = binding.imageView5.layoutParams as LinearLayout.LayoutParams
+                    layout.setMargins(calc.toInt(), 0, 0, 0)
+                    binding.imageView5.layoutParams = layout
                 }
                 myBooleanArray[3] = true
             }
-        }
+        }*/
 
         binding.GuessButton.setOnClickListener {
             Log.d("TEST", lat.toString())
@@ -143,26 +161,40 @@ class EntryFragment : Fragment() {
         return bitmap
     }
 
-    private fun crossfade(imageView: ImageView,bitmap: Bitmap) {
+    fun crossfade(imageView: ImageView, bitmap: Bitmap) {
         val fadeIn = AlphaAnimation(0f, 1f)
         fadeIn.duration = 1000
+
         val fadeOut = AlphaAnimation(1f, 0f)
         fadeOut.duration = 1000
+
+        fadeOut.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+
+            override fun onAnimationEnd(animation: Animation?) {
+                mult -= 0.1
+                "Deduction: ${round(100*(1-mult)).toInt()}%".also { binding.deduction.text = it }
+                imageView.setImageBitmap(bitmap)
+                bitmap.toRoundedCorners(40F)
+                imageView.startAnimation(fadeIn) // Start fadeIn animation here
+                imageView.setImageBitmap(bitmap.toRoundedCorners(40F))
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
 
         fadeIn.setAnimationListener(object : Animation.AnimationListener {
             override fun onAnimationStart(animation: Animation?) {}
 
             override fun onAnimationEnd(animation: Animation?) {
-                imageView.setImageBitmap(bitmap)
-                //imageView.startAnimation(fadeOut)
+                // No need to set the image bitmap or start fadeOut animation here
             }
 
             override fun onAnimationRepeat(animation: Animation?) {}
         })
-        imageView.startAnimation(fadeOut)
-        imageView.startAnimation(fadeIn)
-    }
 
+        imageView.startAnimation(fadeOut) // Start fadeOut animation first
+    }
 
 
 

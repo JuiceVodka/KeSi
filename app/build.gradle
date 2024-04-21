@@ -22,6 +22,8 @@ android {
         buildConfigField 'String', 'MAPS_API_KEY', "\"${mapsApiKey}\""
     }
 
+
+
     viewBinding {
         enabled = true
     }
