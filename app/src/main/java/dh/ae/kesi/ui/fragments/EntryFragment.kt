@@ -154,7 +154,7 @@ class EntryFragment : Fragment() {
 
             override fun onAnimationEnd(animation: Animation?) {
                 mult -= 0.1
-                "Deduction: ${round(100*(1-mult)).toInt()}%".also { binding.deduction.text = it }
+                "Current deduction: ${round(100*(1-mult)).toInt()}%".also { binding.deduction.text = it }
                 imageView.setImageBitmap(bitmap)
                 bitmap.toRoundedCorners(40F)
                 imageView.startAnimation(fadeIn) // Start fadeIn animation here
