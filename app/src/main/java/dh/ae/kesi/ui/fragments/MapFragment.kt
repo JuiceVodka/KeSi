@@ -35,9 +35,6 @@ import com.google.android.material.snackbar.Snackbar
 import com.parse.ParseObject
 import com.parse.ParseQuery
 import dh.ae.kesi.databinding.FragmentMapBinding
-import kotlin.math.ln
-import dh.ae.kesi.R
-import dh.ae.kesi.databinding.FragmentMapBinding
 
 class MapFragment : Fragment() {
 
@@ -46,17 +43,8 @@ class MapFragment : Fragment() {
     private val scoreMultiplier: Double = 0.8
     private val submitLat = 0.0
     private val submitLng = 0.0
-    private val submitLatLng = LatLng(submitLat, submitLng)
-
-
-
-    private val leaderboard: MutableList<LeaderboardEntry> = mutableListOf(
-        LeaderboardEntry("User1", 100, 5.0, 5.0),
-        LeaderboardEntry("User2", 90, 5.0, 5.0),
-        LeaderboardEntry("User3", 80, 5.0, 5.0),
-        LeaderboardEntry("User4", 70, 5.0, 5.0),
-        LeaderboardEntry("User5", 0, 5.0, 5.0),
-    )
+    private val answerLatLng = LatLng(submitLat, submitLng)
+    private var submitLatLng: LatLng = LatLng(0.0, 0.0)
     private lateinit var leaderboardCurr: List<LeaderboardEntry>
 
 
@@ -64,7 +52,6 @@ class MapFragment : Fragment() {
     private lateinit var gMap: GoogleMap
     private lateinit var binding: FragmentMapBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var submitLocation: LatLng = LatLng(0.0, 0.0)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -94,7 +81,7 @@ class MapFragment : Fragment() {
             )
             // When map is loaded
             googleMap.setOnMapClickListener { latLng ->
-                submitLocation = latLng
+                submitLatLng = latLng
                 googleMap.clear()
                 val markerOptions = MarkerOptions()
                 markerOptions.position(latLng)
@@ -149,7 +136,7 @@ class MapFragment : Fragment() {
 
     private fun submitResults() {
         val sharedPreference =  requireActivity().getSharedPreferences("User_data", Context.MODE_PRIVATE)
-        val distance = calculateDistance(submitLocation, submitLatLng)
+        val distance = calculateDistance(submitLatLng, answerLatLng)
         val score = calculateScore(distance, scoreMultiplier)
         val uname = sharedPreference.getString("username", "Anonymous") ?: "Anonymous"
         postToDb(score, uname)
@@ -157,8 +144,8 @@ class MapFragment : Fragment() {
         val editor = sharedPreference.edit()
         editor.putBoolean(challengeId, true)
         editor.apply()
-        setFinishMarker(submitLatLng)
-        moveCameraToFitAllMarkers(submitLocation, submitLatLng)
+        setFinishMarker(answerLatLng)
+        moveCameraToFitAllMarkers(submitLatLng, answerLatLng)
     }
 
     private fun removeListeners() {
@@ -212,9 +199,12 @@ class MapFragment : Fragment() {
         val item5: TextView = requireActivity().findViewById(R.id.item5)
 
         val textViews = listOf(item1, item2, item3, item4, item5)
-
+        val sortedLeaderboardCurr = leaderboardCurr.sortedByDescending { it.score }
         var textSize = 32.0f
-        for (i in leaderboardCurr.indices) {
+        for (i in sortedLeaderboardCurr.indices) {
+            if (i >= 5) {
+                break
+            }
             textViews[i].text = getString(R.string.leaderboardItem,  leaderboardCurr[i].userName, leaderboardCurr[i].score.toString())
             textViews[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             textViews[i].textSize = textSize
@@ -389,7 +379,7 @@ class MapFragment : Fragment() {
         })
     }
     private fun calculateScore(distance: Float, scoreMultiplier: Double): Int {
-        return (10000 * scoreMultiplier / ln(distance.toDouble())).toInt()
+        return (10000 * scoreMultiplier / (distance.toDouble())).toInt()
     }
 
     private fun getIconFromName(iconName: String): BitmapDescriptor {
