@@ -18,4 +18,5 @@
     <string name="back4app_client_key">OIn8Ddtjp8ZnV6jlIXeC7KZqwWvj2TixCwnImfGM</string>
     <string name="close_leaderboard">Close leaderboard</string>
     <string name="deduction_description">  Each hint gives you a deduction!</string>
+    <string name="take_a_guess">Take a guess!</string>
 </resources>
