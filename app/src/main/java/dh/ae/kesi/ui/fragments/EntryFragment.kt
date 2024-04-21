@@ -47,12 +47,10 @@ class EntryFragment : Fragment() {
         val img1String = arguments?.getString("img1")
         val img2String = arguments?.getString("img2")
         val img3String = arguments?.getString("img3")
-        val img4String = arguments?.getString("img4")
-        val img5String = arguments?.getString("img5")
         val lat = arguments?.getString("lat")
         val lng = arguments?.getString("long")
 
-        val bitmaps = listOf(img1String, img2String, img3String, img4String, img5String).map { decodeImg(it!!) }
+        val bitmaps = listOf(img1String, img2String, img3String).map { decodeImg(it!!) }
         val displayMetrics = resources.displayMetrics.xdpi
         binding.imageView1.setImageBitmap(bitmaps[0].toRoundedCorners(40F))
         val calc = displayMetrics/2 - binding.imageView1.width/2

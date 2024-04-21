@@ -60,14 +60,16 @@ class ListFragment : Fragment() {
                 Log.d("test", _locations.toString())
 
                 val sharedPreference =  activity?.getSharedPreferences("User_data", Context.MODE_PRIVATE)
-                for (i in 0.._locations.size-1){
-                    val posterId = _locations.get(i).objectId
+                val iterator = _locations.iterator()
+                while(iterator.hasNext()){
+                    val i = iterator.next()
+                    val posterId = i.objectId
                     val posterValInPrefs = sharedPreference?.getBoolean(posterId, false)
                     if (posterValInPrefs == true){
-                        _locations.removeAt(i)
-                        Log.d("REMOVING", "REMOVED")
+                        iterator.remove()
                     }
                 }
+
 
                 adjustVisibility(recyclerView, spinner)
                 adapter = LocationAdapter(_locations)

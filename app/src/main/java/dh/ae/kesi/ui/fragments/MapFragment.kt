@@ -35,28 +35,18 @@ import com.google.android.material.snackbar.Snackbar
 import com.parse.ParseObject
 import com.parse.ParseQuery
 import dh.ae.kesi.databinding.FragmentMapBinding
-import kotlin.math.ln
 import dh.ae.kesi.R
-
+import kotlin.math.pow
 
 class MapFragment : Fragment() {
 
+
+
     data class LeaderboardEntry(val userName: String, val score: Int?, val lon: Double?, val lat: Double?)
-    private val challengeId: String = "test-id"
-    private val scoreMultiplier: Double = 0.8
-    private val submitLat = 0.0
-    private val submitLng = 0.0
-    private val submitLatLng = LatLng(submitLat, submitLng)
-
-
-
-    private val leaderboard: MutableList<LeaderboardEntry> = mutableListOf(
-        LeaderboardEntry("User1", 100, 5.0, 5.0),
-        LeaderboardEntry("User2", 90, 5.0, 5.0),
-        LeaderboardEntry("User3", 80, 5.0, 5.0),
-        LeaderboardEntry("User4", 70, 5.0, 5.0),
-        LeaderboardEntry("User5", 0, 5.0, 5.0),
-    )
+    private var challengeId: String = "test-id"
+    private var scoreMultiplier: Double = 0.8
+    private var answerLatLng = LatLng(0.0, 0.0)
+    private var submitLatLng: LatLng = LatLng(0.0, 0.0)
     private lateinit var leaderboardCurr: List<LeaderboardEntry>
 
 
@@ -64,16 +54,20 @@ class MapFragment : Fragment() {
     private lateinit var gMap: GoogleMap
     private lateinit var binding: FragmentMapBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
-    private var submitLocation: LatLng = LatLng(0.0, 0.0)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
+        challengeId = arguments?.getString("objectId") ?: "test-id"
+        scoreMultiplier = arguments?.getDouble("mult") ?: 1.0
+
+        answerLatLng = LatLng(arguments?.getDouble("lat") ?: 0.0, arguments?.getDouble("lng") ?: 0.0)
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
         // Inflate the layout for this fragment
         binding = FragmentMapBinding.inflate(inflater, container, false)
         val root = binding.root
@@ -94,7 +88,7 @@ class MapFragment : Fragment() {
             )
             // When map is loaded
             googleMap.setOnMapClickListener { latLng ->
-                submitLocation = latLng
+                submitLatLng = latLng
                 googleMap.clear()
                 val markerOptions = MarkerOptions()
                 markerOptions.position(latLng)
@@ -149,7 +143,7 @@ class MapFragment : Fragment() {
 
     private fun submitResults() {
         val sharedPreference =  requireActivity().getSharedPreferences("User_data", Context.MODE_PRIVATE)
-        val distance = calculateDistance(submitLocation, submitLatLng)
+        val distance = calculateDistance(submitLatLng, answerLatLng)
         val score = calculateScore(distance, scoreMultiplier)
         val uname = sharedPreference.getString("username", "Anonymous") ?: "Anonymous"
         postToDb(score, uname)
@@ -157,8 +151,8 @@ class MapFragment : Fragment() {
         val editor = sharedPreference.edit()
         editor.putBoolean(challengeId, true)
         editor.apply()
-        setFinishMarker(submitLatLng)
-        moveCameraToFitAllMarkers(submitLocation, submitLatLng)
+        setFinishMarker(answerLatLng)
+        moveCameraToFitAllMarkers(submitLatLng, answerLatLng)
     }
 
     private fun removeListeners() {
@@ -212,12 +206,23 @@ class MapFragment : Fragment() {
         val item5: TextView = requireActivity().findViewById(R.id.item5)
 
         val textViews = listOf(item1, item2, item3, item4, item5)
-
+        val sortedLeaderboardCurr = leaderboardCurr.sortedByDescending { it.score }
         var textSize = 32.0f
-        for (i in leaderboardCurr.indices) {
-            textViews[i].text = getString(R.string.leaderboardItem,  leaderboardCurr[i].userName, leaderboardCurr[i].score.toString())
+        for (i in 0..4) {
+
+            if (i >= sortedLeaderboardCurr.size) {
+                textViews[i].visibility = View.GONE
+                continue
+            }
+            if ( sortedLeaderboardCurr[i].userName == null) {
+                textViews[i].visibility = View.GONE
+            }
+            else {
+            textViews[i].text = getString(R.string.leaderboardItem,  sortedLeaderboardCurr[i].userName, sortedLeaderboardCurr[i].score.toString())
             textViews[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             textViews[i].textSize = textSize
+
+            }
 
             textSize -= 2
         }
@@ -235,7 +240,7 @@ class MapFragment : Fragment() {
     }
 
     fun convertParseObjectsToLeaderboardEntries(parseObjects: List<ParseObject>): List<LeaderboardEntry> {
-        return parseObjects.map { parseObject ->
+        return parseObjects.filter { it.getString("locationId") == challengeId }.map { parseObject ->
             LeaderboardEntry(
                 userName = parseObject.getString("username") ?: "",
                 score = parseObject.getString("score")?.toInt(),
@@ -352,7 +357,11 @@ class MapFragment : Fragment() {
     private fun calculateDistance(latlng1: LatLng, latlng2: LatLng): Float {
         val results = FloatArray(1)
         Location.distanceBetween(latlng1.latitude, latlng1.longitude, latlng2.latitude, latlng2.longitude, results)
-        return results[0]
+        return if (results[0] < 1000) {
+            results[0]
+        } else {
+            results[0] / 1000
+        }
     }
 
     private fun getCurrentLocation(callback: (LatLng?) -> Unit) {
@@ -389,7 +398,7 @@ class MapFragment : Fragment() {
         })
     }
     private fun calculateScore(distance: Float, scoreMultiplier: Double): Int {
-        return (10000 * scoreMultiplier / ln(distance.toDouble())).toInt()
+        return ((10000 / (distance).toDouble().pow(1.3)) * scoreMultiplier).toInt()
     }
 
     private fun getIconFromName(iconName: String): BitmapDescriptor {

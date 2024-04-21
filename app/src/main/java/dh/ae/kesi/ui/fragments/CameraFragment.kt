@@ -189,15 +189,13 @@ var photoFile :File? = null
 
             picArray.add(Bitmap.createScaledBitmap(imageBitmap, 700, 900, false))
 
-            if(picCount < 4){
+            if(picCount < 2){
                 picCount++
                 dispatchTakePictureIntent()
             }else{
                 binding.imageView1.setImageBitmap(picArray[0].toRoundedCorners(40F))
                 binding.imageView2.setImageBitmap(picArray[1].toRoundedCorners(40F))
                 binding.imageView3.setImageBitmap(picArray[2].toRoundedCorners(40F))
-                binding.imageView4.setImageBitmap(picArray[3].toRoundedCorners(40F))
-                binding.imageView5.setImageBitmap(picArray[4].toRoundedCorners(40F))
             }
 
             //show second UI
@@ -256,8 +254,6 @@ var photoFile :File? = null
         toBase.put("img1", encodeImgToBase64(picArray[0]))
         toBase.put("img2", encodeImgToBase64(picArray[1]))
         toBase.put("img3", encodeImgToBase64(picArray[2]))
-        toBase.put("img4", encodeImgToBase64(picArray[3]))
-        toBase.put("img5", encodeImgToBase64(picArray[4]))
 
         getLoc()
 
