@@ -208,19 +208,17 @@ class MapFragment : Fragment() {
         val textViews = listOf(item1, item2, item3, item4, item5)
         val sortedLeaderboardCurr = leaderboardCurr.sortedByDescending { it.score }
         var textSize = 32.0f
-        for (i in 0..sortedLeaderboardCurr.size) {
-            if (i >= 5) {
-                break
-            }
-            if (i >= leaderboardCurr.size) {
+        for (i in 0..4) {
+
+            if (i >= sortedLeaderboardCurr.size) {
                 textViews[i].visibility = View.GONE
                 continue
             }
-            if ( leaderboardCurr[i].userName == null) {
+            if ( sortedLeaderboardCurr[i].userName == null) {
                 textViews[i].visibility = View.GONE
             }
             else {
-            textViews[i].text = getString(R.string.leaderboardItem,  leaderboardCurr[i].userName, leaderboardCurr[i].score.toString())
+            textViews[i].text = getString(R.string.leaderboardItem,  sortedLeaderboardCurr[i].userName, sortedLeaderboardCurr[i].score.toString())
             textViews[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             textViews[i].textSize = textSize
 
@@ -400,7 +398,7 @@ class MapFragment : Fragment() {
         })
     }
     private fun calculateScore(distance: Float, scoreMultiplier: Double): Int {
-        return 10000 / (distance).toInt()
+        return ((10000 / (distance).toDouble().pow(1.3)) * scoreMultiplier).toInt()
     }
 
     private fun getIconFromName(iconName: String): BitmapDescriptor {
