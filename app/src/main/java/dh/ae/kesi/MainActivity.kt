@@ -2,7 +2,6 @@ package dh.ae.kesi
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,11 +13,12 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.model.LatLng
 import dh.ae.kesi.databinding.ActivityMainBinding
 import dh.ae.kesi.ui.adapters.LocationAdapter
+import dh.ae.kesi.ui.fragments.CameraFragment
+import dh.ae.kesi.ui.fragments.EntryFragment
 import dh.ae.kesi.ui.fragments.ListFragment
+import dh.ae.kesi.ui.fragments.MapFragment
 
 class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface, EntryFragment.EntryFragmentListener {
     private lateinit var binding : ActivityMainBinding

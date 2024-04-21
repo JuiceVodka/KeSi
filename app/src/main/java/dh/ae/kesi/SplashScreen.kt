@@ -44,7 +44,7 @@ class SplashScreen : AppCompatActivity() {
         }
 
     }
-    
+
     fun startTimer(timer:Long){
         Handler().postDelayed({
             //replace SplashActivity with MainActivity after timer
