@@ -1,6 +1,6 @@
 # KeSi app by team Absolutne Enote
 KeSi is an app for community driven location guessing, based on picture clues, provided by your friends. The app prompts you to take some pictures when leaving your standard location and share them with your friends, that can then try to guess where you are and compete at who is the best at guessing locations based on subtle clues.
-You can try the app out yourself by downloading it from our website.
+You can try the app out yourself by downloading it from our [website](https://juicevodka.github.io/KeSi/).
 
 ## Team members
 [Igor Nikolaj Sok](https://www.linkedin.com/in/igor-nikolaj-sok-767913236/?originalSubdomain=si)
