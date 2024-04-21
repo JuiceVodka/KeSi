@@ -1,12 +1,22 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
-
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bkg4"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
     <HorizontalScrollView
         android:id="@+id/HorizontalImageScrollView"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:layout_marginTop="55dp"
         app:layout_constraintHeight_percent="0.5"
         app:layout_constraintWidth_percent="1"
         app:layout_constraintEnd_toEndOf="parent"
@@ -20,61 +30,102 @@
 
             <ImageView
                 android:id="@+id/imageView1"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="55dp"
                 android:layout_marginEnd="20dp"
                 />
 
             <ImageView
                 android:id="@+id/imageView2"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="20dp"
-                android:src="@drawable/hint"/>
+                android:src="@drawable/icons8_idea_128_w"
+                android:backgroundTint="@color/white"
+                android:scaleType="centerInside"
+                />
             <ImageView
                 android:id="@+id/imageView3"
-                android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/hint"
+                android:layout_width="300dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="55dp"
+                android:src="@drawable/icons8_idea_128_w"
+                android:scaleType="centerInside"
+                android:backgroundTint="@color/white"
                 />
 
-            <ImageView
+            <!--<ImageView
                 android:id="@+id/imageView4"
                 android:layout_width="200dp"
-                android:layout_height="200dp"
+                android:layout_height="match_parent"
                 android:layout_marginEnd="20dp"
-                android:src="@drawable/hint"/>
+                android:src="@drawable/icons8_idea_128"
+                android:scaleType="centerInside"/>
 
             <ImageView
                 android:id="@+id/imageView5"
                 android:layout_width="200dp"
-                android:layout_height="200dp"
-                android:layout_marginEnd="20dp"
-                android:src="@drawable/hint"/>
-
-
+                android:layout_height="match_parent"
+                android:layout_marginEnd="100dp"
+                android:src="@drawable/icons8_idea_128"
+                android:scaleType="centerInside"/>-->
         </LinearLayout>
     </HorizontalScrollView>
 
-    <TextView
-        android:id="@+id/description"
+
+    <LinearLayout
+        android:id="@+id/deductionLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="68dp"
-        android:text="Your description here"
+        android:layout_marginTop="44dp"
+        android:background="@drawable/back"
+        android:orientation="vertical"
+        android:padding="12dp"
+
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/HorizontalImageScrollView" />
+        app:layout_constraintTop_toBottomOf="@id/HorizontalImageScrollView">
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/deduction_description"
+            android:textSize="15sp"
+            app:drawableLeftCompat="@drawable/icons8_idea_16_w"
+            android:textColor="@color/white"/>
+
+        <TextView
+            android:id="@+id/deduction"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Current deduction: 0%"
+            android:textColor="@color/white"/>
+    </LinearLayout>
 
     <Button
-        android:id="@+id/GuessButton"
-        android:layout_width="187dp"
-        android:layout_height="47dp"
-        android:layout_marginTop="132dp"
-        android:background="@null"
+        android:id="@+id/problem"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_gravity="center"
+        android:background="@drawable/map_pointer"
+        android:backgroundTint="@color/white"
+        android:drawableStart="@drawable/map_pointer"
+        android:drawablePadding="5dp"
+        android:paddingLeft="40dp"
+        android:paddingRight="40dp"
+        android:shadowColor="@color/black"
+        android:textColor="@color/black"
+        app:backgroundTint="@null"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/description" />
+        app:layout_constraintTop_toBottomOf="@+id/deductionLayout"
+        app:layout_constraintVertical_bias="0.271" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

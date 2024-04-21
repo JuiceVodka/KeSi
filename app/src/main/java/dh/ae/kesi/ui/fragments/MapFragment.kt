@@ -1,7 +1,6 @@
 package dh.ae.kesi.ui.fragments
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -54,6 +53,7 @@ class MapFragment : Fragment() {
     private lateinit var gMap: GoogleMap
     private lateinit var binding: FragmentMapBinding
     private lateinit var fusedLocationClient: FusedLocationProviderClient
+    private var user: String = "Anonymous"
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(requireActivity())
@@ -116,20 +116,7 @@ class MapFragment : Fragment() {
 
     private fun addMapsButtonListener() {
         binding.mapsButton.setOnClickListener {
-            val builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Location")
-            builder.setMessage("Do you want to submit this location?")
-            builder.setPositiveButton("Yes") { _, _ ->
-                submitResults()
-            }
-            builder.setNegativeButton("No") { _, _ ->
-                Snackbar.make(
-                    binding.root,
-                    "Location not saved",
-                    Snackbar.LENGTH_SHORT
-                ).show()
-            }
-            builder.show()
+            submitResults()
         }
     }
 
@@ -145,8 +132,8 @@ class MapFragment : Fragment() {
         val sharedPreference =  requireActivity().getSharedPreferences("User_data", Context.MODE_PRIVATE)
         val distance = calculateDistance(submitLatLng, answerLatLng)
         val score = calculateScore(distance, scoreMultiplier)
-        val uname = sharedPreference.getString("username", "Anonymous") ?: "Anonymous"
-        postToDb(score, uname)
+        user = sharedPreference.getString("uname", "Anonymous") ?: "Anonymous"
+        postToDb(score, user)
         removeListeners()
         val editor = sharedPreference.edit()
         editor.putBoolean(challengeId, true)
@@ -154,6 +141,8 @@ class MapFragment : Fragment() {
         setFinishMarker(answerLatLng)
         moveCameraToFitAllMarkers(submitLatLng, answerLatLng)
     }
+
+
 
     private fun removeListeners() {
         gMap.setOnMapClickListener(null)
@@ -208,29 +197,36 @@ class MapFragment : Fragment() {
         val textViews = listOf(item1, item2, item3, item4, item5)
         val sortedLeaderboardCurr = leaderboardCurr.sortedByDescending { it.score }
         var textSize = 32.0f
+        for (i in 0..sortedLeaderboardCurr.size - 1) {
+            if (sortedLeaderboardCurr[i].userName != user) {
+                gMap.addMarker(
+                    MarkerOptions().position(
+                        LatLng(
+                            sortedLeaderboardCurr[i].lat ?: 0.0,
+                            sortedLeaderboardCurr[i].lon ?: 0.0
+                        )
+                    ).title(sortedLeaderboardCurr[i].userName)
+                        .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                )
+            }
+        }
         for (i in 0..4) {
-
-            if (i >= sortedLeaderboardCurr.size) {
+            if (i >= sortedLeaderboardCurr.size || sortedLeaderboardCurr[i].score == null) {
                 textViews[i].visibility = View.GONE
                 continue
             }
-            if ( sortedLeaderboardCurr[i].userName == null) {
-                textViews[i].visibility = View.GONE
-            }
-            else {
+            textViews[i].visibility = View.VISIBLE
             textViews[i].text = getString(R.string.leaderboardItem,  sortedLeaderboardCurr[i].userName, sortedLeaderboardCurr[i].score.toString())
             textViews[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
             textViews[i].textSize = textSize
-
-            }
-
             textSize -= 2
+
         }
 
 
     }
 
-    fun getAllLeaderboards(callback: (List<ParseObject>?, Exception?) -> Unit) {
+    private fun getAllLeaderboards(callback: (List<ParseObject>?, Exception?) -> Unit) {
         Log.d("test", "querying")
         val query = ParseQuery.getQuery<ParseObject>("Leaderboard")
         query.findInBackground { leaderboards, e ->
@@ -239,13 +235,31 @@ class MapFragment : Fragment() {
         }
     }
 
-    fun convertParseObjectsToLeaderboardEntries(parseObjects: List<ParseObject>): List<LeaderboardEntry> {
+    private fun getAllLocations(callback: (List<ParseObject>?, Exception?) -> Unit) {
+        Log.d("test", "querying")
+        val query = ParseQuery.getQuery<ParseObject>("Locations")
+        query.findInBackground { leaderboards, e ->
+            Log.d("test", leaderboards.toString())
+            callback(leaderboards, e)
+        }
+    }
+
+    private fun convertParseObjectsToLeaderboardEntries(parseObjects: List<ParseObject>): List<LeaderboardEntry> {
         return parseObjects.filter { it.getString("locationId") == challengeId }.map { parseObject ->
             LeaderboardEntry(
                 userName = parseObject.getString("username") ?: "",
                 score = parseObject.getString("score")?.toInt(),
                 lon = parseObject.getString("long")?.toDouble(),
                 lat = parseObject.getString("lat")?.toDouble()
+            )
+        }
+    }
+
+    private fun convertParseObjectsToLatLng(parseObjects: List<ParseObject>): List<LatLng> {
+        return parseObjects.filter { it.objectId == challengeId }.map { parseObject ->
+            LatLng(
+                parseObject.getString("lat")?.toDouble() ?: 0.0,
+                parseObject.getString("long")?.toDouble() ?: 0.0
             )
         }
     }
@@ -354,14 +368,10 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun calculateDistance(latlng1: LatLng, latlng2: LatLng): Float {
+    private fun calculateDistance(latlng1: LatLng, latlng2: LatLng): Double {
         val results = FloatArray(1)
         Location.distanceBetween(latlng1.latitude, latlng1.longitude, latlng2.latitude, latlng2.longitude, results)
-        return if (results[0] < 1000) {
-            results[0]
-        } else {
-            results[0] / 1000
-        }
+        return (results[0] / 1000).toDouble()
     }
 
     private fun getCurrentLocation(callback: (LatLng?) -> Unit) {
@@ -391,14 +401,14 @@ class MapFragment : Fragment() {
         val title = "You are here"
         val icon: BitmapDescriptor =
             getIconFromName("flag")
-        gMap?.addMarker(MarkerOptions().apply {
+        gMap.addMarker(MarkerOptions().apply {
             position(currLocation)
             title(title)
             icon(icon)
         })
     }
-    private fun calculateScore(distance: Float, scoreMultiplier: Double): Int {
-        return ((10000 / (distance).toDouble().pow(1.3)) * scoreMultiplier).toInt()
+    private fun calculateScore(distance: Double, scoreMultiplier: Double): Int {
+        return (10000 / (((distance).pow(1.3)) + 1) * scoreMultiplier).toInt()
     }
 
     private fun getIconFromName(iconName: String): BitmapDescriptor {
