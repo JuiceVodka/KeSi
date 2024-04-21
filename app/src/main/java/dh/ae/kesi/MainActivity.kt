@@ -13,7 +13,6 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.gms.location.FusedLocationProviderClient
 import dh.ae.kesi.databinding.ActivityMainBinding
 import dh.ae.kesi.ui.adapters.LocationAdapter
 import dh.ae.kesi.ui.fragments.ListFragment
@@ -117,5 +116,13 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
         entryFragment.arguments = bundle
         Log.d("test", "menjam fragment")
         fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)?.commit()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        val transaction = supportFragmentManager.beginTransaction()
+        val mapFragment = MapFragment()
+        transaction.replace(R.id.fragmentFrame, mapFragment)
+        transaction.commit()
     }
 }

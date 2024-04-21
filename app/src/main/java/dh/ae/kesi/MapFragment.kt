@@ -2,6 +2,7 @@ package dh.ae.kesi
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
@@ -15,7 +16,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -32,11 +32,21 @@ import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
 import dh.ae.kesi.databinding.FragmentMapBinding
+import kotlin.math.ln
+
 class MapFragment : Fragment() {
 
     data class LeaderboardEntry(val userName: String, val score: Int)
+//    private val sharedPreference =  requireActivity().getSharedPreferences("User_data", Context.MODE_PRIVATE)
+    private val challengeId: String = "test-id"
+    private val scoreMultiplier: Double = 0.8
+    private val submitLat = 0.0
+    private val submitLng = 0.0
+    private val submitLatLng = LatLng(submitLat, submitLng)
 
-    val leaderboard: MutableList<LeaderboardEntry> = mutableListOf(
+
+
+    private val leaderboard: MutableList<LeaderboardEntry> = mutableListOf(
         LeaderboardEntry("User1", 100),
         LeaderboardEntry("User2", 90),
         LeaderboardEntry("User3", 80),
@@ -111,8 +121,7 @@ class MapFragment : Fragment() {
             builder.setTitle("Location")
             builder.setMessage("Do you want to submit this location?")
             builder.setPositiveButton("Yes") { _, _ ->
-//                removeListeners()
-                showResults()
+                submitResults()
             }
             builder.setNegativeButton("No") { _, _ ->
                 Snackbar.make(
@@ -133,14 +142,21 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun showResults() {
-        getCurrentLocation { currLocation ->
-            if (currLocation != null) {
-                setFinishMarker(currLocation)
-                moveCameraToFitAllMarkers(submitLocation, currLocation)
-                toggleVisibility()
-            }
-        }
+    private fun submitResults() {
+        removeListeners()
+//        val editor = sharedPreference.edit()
+//        editor.putBoolean(challengeId, true)
+//        editor.apply()
+        setFinishMarker(submitLatLng)
+        moveCameraToFitAllMarkers(submitLocation, submitLatLng)
+        toggleVisibility()
+//        getCurrentLocation { currLocation ->
+//            if (currLocation != null) {
+//                setFinishMarker(currLocation)
+//                moveCameraToFitAllMarkers(submitLocation, currLocation)
+//                toggleVisibility()
+//            }
+//        }
     }
 
     private fun removeListeners() {
@@ -151,7 +167,9 @@ class MapFragment : Fragment() {
     private fun toggleVisibility() {
         binding.mapsButton.visibility = View.GONE
         binding.submitScore.visibility = View.VISIBLE
-        val score = 10
+
+        val distance = calculateDistance(submitLocation, submitLatLng)
+        val score = calculateScore(distance, scoreMultiplier)
         binding.submitScore.text = getString(R.string.submitScore, score)
         binding.returnHomeButton.visibility = View.VISIBLE
         binding.leaderboard.visibility = View.VISIBLE
@@ -163,14 +181,20 @@ class MapFragment : Fragment() {
         val item4: TextView = requireActivity().findViewById(R.id.item4)
         val item5: TextView = requireActivity().findViewById(R.id.item5)
 
+
+
+
 // Create a list of the TextViews
         val textViews = listOf(item1, item2, item3, item4, item5)
 
 // Iterate over the leaderboard and set the text of each TextView
+        var textSize = 16.0f
         for (i in leaderboard.indices) {
             textViews[i].text = getString(R.string.leaderboardItem,  leaderboard[i].userName, leaderboard[i].score.toString())
-//            textViews[i].background= ContextCompat.getDrawable(requireContext(), R.drawable.border)
             textViews[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            textViews[i].textSize = textSize
+
+            textSize -= 2
         }
     }
 
@@ -179,11 +203,6 @@ class MapFragment : Fragment() {
         val initialZoomLevel = 15f
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(finishLocation, initialZoomLevel)
         gMap.moveCamera(cameraUpdate)
-
-        // Calculate the bounds including both locations
-        val builder = LatLngBounds.Builder()
-        builder.include(submitLocation)
-        builder.include(finishLocation)
 
 
         val visibleRegion = gMap.projection.visibleRegion
@@ -298,6 +317,9 @@ class MapFragment : Fragment() {
             title(title)
             icon(icon)
         })
+    }
+    private fun calculateScore(distance: Float, scoreMultiplier: Double): Int {
+        return (10000 * scoreMultiplier / ln(distance.toDouble())).toInt()
     }
 
     private fun getIconFromName(iconName: String): BitmapDescriptor {

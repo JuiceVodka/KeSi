@@ -53,7 +53,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_alignParentEnd="true"
-        android:background="@android:color/white"
+        android:background="@color/whiteTransparent"
         android:orientation="vertical"
         android:padding="10dp"
         android:visibility="gone">
@@ -62,43 +62,41 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="28sp"
             android:textStyle="bold"
+            android:textSize="22sp"
             android:text="@string/leaderboard" />
 
         <TextView
             android:id="@+id/item1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/gold"
+            android:background="@color/goldTransparent"
             android:text="@string/item_1" />
 
         <TextView
             android:id="@+id/item2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/silver"
+            android:background="@color/silverTransparent"
             android:text="@string/item_2" />
 
         <TextView
             android:id="@+id/item3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/bronze"
+            android:background="@color/bronzeTransparent"
             android:text="@string/item_3" />
 
         <TextView
             android:id="@+id/item4"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border"
             android:text="@string/item_4" />
 
         <TextView
             android:id="@+id/item5"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@drawable/border"
             android:text="@string/item_5" />
 
     </LinearLayout>
