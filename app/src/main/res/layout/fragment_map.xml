@@ -35,6 +35,7 @@
         android:textSize="42sp"
         android:textStyle="bold"
         android:textColor="#ffffff"
+        android:padding="10dp"
         android:visibility="gone"
         />
 
