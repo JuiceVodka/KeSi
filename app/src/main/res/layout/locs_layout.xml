@@ -5,17 +5,13 @@
     android:layout_height="wrap_content"
     android:id="@+id/card_view"
     android:layout_margin="5dp"
-    app:cardBackgroundColor="@color/white"
-    app:cardCornerRadius="25dp"
-    app:cardElevation="3dp"
-    app:contentPadding="4dp"
+    app:cardBackgroundColor="#80FFFFFF"
     android:foreground="?selectableItemBackground"
     android:clickable="true">
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="147dp"
-
         android:padding="16dp">
 
         <ImageView
@@ -25,17 +21,19 @@
             android:layout_alignParentStart="true"
             android:layout_marginStart="1dp"
             android:layout_marginTop="0dp"
-            android:background="@drawable/rounded_image_background"/>/>
+            android:background="@drawable/rounded_image_background" />/>
 
         <TextView
             android:id="@+id/item_title"
             android:layout_width="150dp"
-            android:layout_height="31dp"
+            android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:layout_marginStart="50dp"
+            android:layout_toEndOf="@+id/item_image"
             android:text="Placeholder"
-            android:textSize="12sp"
-            android:layout_toEndOf="@+id/item_image"/>
+            android:textSize="14sp"
+            android:textColor="@android:color/black"
+            android:textStyle="bold"/>
 
     </RelativeLayout>
 </androidx.cardview.widget.CardView>

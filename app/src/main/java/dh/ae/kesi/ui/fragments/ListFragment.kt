@@ -10,6 +10,7 @@ import android.widget.AbsSpinner
 import android.widget.ProgressBar
 import androidx.annotation.UiContext
 import androidx.appcompat.widget.AppCompatButton
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.fragment.app.Fragment
 import dh.ae.kesi.R
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -28,7 +29,7 @@ class ListFragment : Fragment() {
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var adapter: RecyclerView.Adapter<*>? = null
     private var spinner :ProgressBar? = null
-    private var backButton :AppCompatButton? = null
+    private var backButton : AppCompatImageView? = null
     private val locationRepository = LocationRepository()
     private lateinit var mainActivity :ListFragmentListener
 
