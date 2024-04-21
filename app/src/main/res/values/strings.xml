@@ -16,5 +16,6 @@
     <string name="back4app_server_url">https://parseapi.back4app.com/</string>
     <string name="back4app_app_id">oRbz7DKOAUF0XR3GEu4OxnYNbwi5S5cVy6pO9Dbk</string>
     <string name="back4app_client_key">OIn8Ddtjp8ZnV6jlIXeC7KZqwWvj2TixCwnImfGM</string>
+    <string name="close_leaderboard">Close leaderboard</string>
     <string name="deduction_description">  Each hint gives you a deduction!</string>
 </resources>

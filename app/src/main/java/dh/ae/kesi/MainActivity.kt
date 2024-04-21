@@ -2,7 +2,6 @@ package dh.ae.kesi
 
 import android.Manifest
 import android.app.Activity
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,13 +13,14 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
-import com.google.android.gms.location.FusedLocationProviderClient
-import com.google.android.gms.maps.model.LatLng
 import dh.ae.kesi.databinding.ActivityMainBinding
 import dh.ae.kesi.ui.adapters.LocationAdapter
+import dh.ae.kesi.ui.fragments.CameraFragment
+import dh.ae.kesi.ui.fragments.EntryFragment
 import dh.ae.kesi.ui.fragments.ListFragment
+import dh.ae.kesi.ui.fragments.MapFragment
 
-class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface, EntryFragment.EntryFragmentListener {
+class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface, EntryFragment.EntryFragmentListener, ListFragment.ListFragmentListener {
     private lateinit var binding : ActivityMainBinding
     private var fragmentTransaction : FragmentTransaction? = null
     private var objId :String? = null
@@ -86,7 +86,7 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
 
         //initialise camera fragment
         fragmentTransaction = supportFragmentManager.beginTransaction()
-        fragmentTransaction!!.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
+        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
 
         val camFragment = CameraFragment()
 
@@ -148,12 +148,13 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
         fragmentTransaction?.commit()
     }
 
-    /*override fun onStart() {
-        super.onStart()
+    override fun goToCameraFragment() {
         fragmentTransaction = supportFragmentManager.beginTransaction()
-        val mapFragment = MapFragment()
-        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
-        fragmentTransaction?.replace(R.id.fragmentFrame, mapFragment)
+        val cameraFragment = CameraFragment()
+
+        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_slide_in_top, androidx.appcompat.R.anim.abc_slide_out_bottom)
+        fragmentTransaction?.replace(R.id.fragmentFrame, cameraFragment)
         fragmentTransaction?.commit()
-    }*/
+
+    }
 }

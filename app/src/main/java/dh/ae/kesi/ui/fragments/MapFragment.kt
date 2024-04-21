@@ -1,21 +1,23 @@
-package dh.ae.kesi
+package dh.ae.kesi.ui.fragments
 
 import android.Manifest
 import android.app.AlertDialog
+import android.content.Context
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.location.Location
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -26,23 +28,36 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.Dot
 import com.google.android.gms.maps.model.Gap
 import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.LatLngBounds
 import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.MarkerOptions
 import com.google.android.gms.maps.model.PolylineOptions
 import com.google.android.material.snackbar.Snackbar
+import com.parse.ParseObject
+import com.parse.ParseQuery
 import dh.ae.kesi.databinding.FragmentMapBinding
+import kotlin.math.ln
+import dh.ae.kesi.R
+
+
 class MapFragment : Fragment() {
 
-    data class LeaderboardEntry(val userName: String, val score: Int)
+    data class LeaderboardEntry(val userName: String, val score: Int?, val lon: Double?, val lat: Double?)
+    private val challengeId: String = "test-id"
+    private val scoreMultiplier: Double = 0.8
+    private val submitLat = 0.0
+    private val submitLng = 0.0
+    private val submitLatLng = LatLng(submitLat, submitLng)
 
-    val leaderboard: MutableList<LeaderboardEntry> = mutableListOf(
-        LeaderboardEntry("User1", 100),
-        LeaderboardEntry("User2", 90),
-        LeaderboardEntry("User3", 80),
-        LeaderboardEntry("User4", 70),
-        LeaderboardEntry("User5", 0)
+
+
+    private val leaderboard: MutableList<LeaderboardEntry> = mutableListOf(
+        LeaderboardEntry("User1", 100, 5.0, 5.0),
+        LeaderboardEntry("User2", 90, 5.0, 5.0),
+        LeaderboardEntry("User3", 80, 5.0, 5.0),
+        LeaderboardEntry("User4", 70, 5.0, 5.0),
+        LeaderboardEntry("User5", 0, 5.0, 5.0),
     )
+    private lateinit var leaderboardCurr: List<LeaderboardEntry>
 
 
 
@@ -111,8 +126,7 @@ class MapFragment : Fragment() {
             builder.setTitle("Location")
             builder.setMessage("Do you want to submit this location?")
             builder.setPositiveButton("Yes") { _, _ ->
-//                removeListeners()
-                showResults()
+                submitResults()
             }
             builder.setNegativeButton("No") { _, _ ->
                 Snackbar.make(
@@ -133,14 +147,18 @@ class MapFragment : Fragment() {
         }
     }
 
-    private fun showResults() {
-        getCurrentLocation { currLocation ->
-            if (currLocation != null) {
-                setFinishMarker(currLocation)
-                moveCameraToFitAllMarkers(submitLocation, currLocation)
-                toggleVisibility()
-            }
-        }
+    private fun submitResults() {
+        val sharedPreference =  requireActivity().getSharedPreferences("User_data", Context.MODE_PRIVATE)
+        val distance = calculateDistance(submitLocation, submitLatLng)
+        val score = calculateScore(distance, scoreMultiplier)
+        val uname = sharedPreference.getString("username", "Anonymous") ?: "Anonymous"
+        postToDb(score, uname)
+        removeListeners()
+        val editor = sharedPreference.edit()
+        editor.putBoolean(challengeId, true)
+        editor.apply()
+        setFinishMarker(submitLatLng)
+        moveCameraToFitAllMarkers(submitLocation, submitLatLng)
     }
 
     private fun removeListeners() {
@@ -148,29 +166,82 @@ class MapFragment : Fragment() {
         binding.mapsButton.setOnClickListener(null)
     }
 
-    private fun toggleVisibility() {
+    private fun toggleVisibility(score: Int) {
         binding.mapsButton.visibility = View.GONE
         binding.submitScore.visibility = View.VISIBLE
-        val score = 10
+
+
         binding.submitScore.text = getString(R.string.submitScore, score)
         binding.returnHomeButton.visibility = View.VISIBLE
         binding.leaderboard.visibility = View.VISIBLE
+        binding.closeButton.visibility = View.VISIBLE
+        binding.closeButton.setOnClickListener {
+            binding.leaderboard.visibility = View.GONE
+            binding.closeButton.visibility = View.GONE
+        }
 
+
+        getAllLeaderboards { _leaderboards, _ ->
+            // Update the UI with the loaded locations
+            _leaderboards?.let {
+                // Assign the loaded locations to the adapter
+                Log.d("test", "v fragmentu")
+                Log.d("test", _leaderboards.toString())
+                leaderboardCurr = convertParseObjectsToLeaderboardEntries(_leaderboards)
+                fillLeaderboard(leaderboardCurr)
+
+            }
+        }
         // Get references to the TextViews
+
+
+
+
+
+// Create a list of the TextViews
+
+// Iterate over the leaderboard and set the text of each TextView
+
+    }
+
+    private fun fillLeaderboard(leaderboardCurr: List<LeaderboardEntry>) {
         val item1: TextView = requireActivity().findViewById(R.id.item1)
         val item2: TextView = requireActivity().findViewById(R.id.item2)
         val item3: TextView = requireActivity().findViewById(R.id.item3)
         val item4: TextView = requireActivity().findViewById(R.id.item4)
         val item5: TextView = requireActivity().findViewById(R.id.item5)
 
-// Create a list of the TextViews
         val textViews = listOf(item1, item2, item3, item4, item5)
 
-// Iterate over the leaderboard and set the text of each TextView
-        for (i in leaderboard.indices) {
-            textViews[i].text = getString(R.string.leaderboardItem,  leaderboard[i].userName, leaderboard[i].score.toString())
-//            textViews[i].background= ContextCompat.getDrawable(requireContext(), R.drawable.border)
+        var textSize = 32.0f
+        for (i in leaderboardCurr.indices) {
+            textViews[i].text = getString(R.string.leaderboardItem,  leaderboardCurr[i].userName, leaderboardCurr[i].score.toString())
             textViews[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+            textViews[i].textSize = textSize
+
+            textSize -= 2
+        }
+
+
+    }
+
+    fun getAllLeaderboards(callback: (List<ParseObject>?, Exception?) -> Unit) {
+        Log.d("test", "querying")
+        val query = ParseQuery.getQuery<ParseObject>("Leaderboard")
+        query.findInBackground { leaderboards, e ->
+            Log.d("test", leaderboards.toString())
+            callback(leaderboards, e)
+        }
+    }
+
+    fun convertParseObjectsToLeaderboardEntries(parseObjects: List<ParseObject>): List<LeaderboardEntry> {
+        return parseObjects.map { parseObject ->
+            LeaderboardEntry(
+                userName = parseObject.getString("username") ?: "",
+                score = parseObject.getString("score")?.toInt(),
+                lon = parseObject.getString("long")?.toDouble(),
+                lat = parseObject.getString("lat")?.toDouble()
+            )
         }
     }
 
@@ -179,11 +250,6 @@ class MapFragment : Fragment() {
         val initialZoomLevel = 15f
         val cameraUpdate = CameraUpdateFactory.newLatLngZoom(finishLocation, initialZoomLevel)
         gMap.moveCamera(cameraUpdate)
-
-        // Calculate the bounds including both locations
-        val builder = LatLngBounds.Builder()
-        builder.include(submitLocation)
-        builder.include(finishLocation)
 
 
         val visibleRegion = gMap.projection.visibleRegion
@@ -204,6 +270,29 @@ class MapFragment : Fragment() {
         }
         // Add dotted line between submitLocation and finishLocation
         addDotedLine(submitLocation, finishLocation)
+    }
+
+    private fun postToDb(score: Int, uname: String = "Anonymous") {
+        val toBase = ParseObject("Leaderboard")
+        toBase.put("username", uname)
+        toBase.put("locationId", challengeId)
+        toBase.put("score", score.toString())
+
+
+
+        toBase.put("lat", submitLatLng.latitude.toString())
+        toBase.put("long", submitLatLng.longitude.toString())
+        toBase.saveInBackground {
+            if (it != null) {
+                it.localizedMessage?.let { message -> Log.e(CameraFragment.TAG, message) }
+            } else {
+                Log.d(CameraFragment.TAG, toBase.toString())
+                Log.d(CameraFragment.TAG, "Object saved.")
+            }
+            toggleVisibility(score)
+        }
+        Toast.makeText(activity, "Location submitted!", Toast.LENGTH_LONG)
+            .show()
     }
 
     private fun addDotedLine(
@@ -298,6 +387,9 @@ class MapFragment : Fragment() {
             title(title)
             icon(icon)
         })
+    }
+    private fun calculateScore(distance: Float, scoreMultiplier: Double): Int {
+        return (10000 * scoreMultiplier / ln(distance.toDouble())).toInt()
     }
 
     private fun getIconFromName(iconName: String): BitmapDescriptor {

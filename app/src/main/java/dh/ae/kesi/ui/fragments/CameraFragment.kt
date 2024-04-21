@@ -1,9 +1,8 @@
-package dh.ae.kesi
+package dh.ae.kesi.ui.fragments
 
 import android.Manifest
 import android.annotation.SuppressLint
 import android.app.Activity
-import android.content.ContentValues
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
@@ -29,6 +28,9 @@ import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import com.google.android.material.snackbar.Snackbar
 import com.parse.ParseObject
+import dh.ae.kesi.BuildConfig
+import dh.ae.kesi.MainActivity
+import dh.ae.kesi.R
 import dh.ae.kesi.databinding.FragmentCameraBinding
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -54,7 +56,7 @@ class CameraFragment : Fragment() {
 
     private lateinit var fusedLocationClient: FusedLocationProviderClient
 
-    private lateinit var mainInter:CamFragmentInterface
+    private lateinit var mainInter: CamFragmentInterface
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,7 +104,8 @@ class CameraFragment : Fragment() {
         /** Check to see we have the necessary permissions for this app, and ask for them if we don't.  */
         fun requestCameraPermission(activity: Activity) {
             ActivityCompat.requestPermissions(
-                activity, arrayOf(CAMERA_PERMISSION), CAMERA_PERMISSION_CODE)
+                activity, arrayOf(CAMERA_PERMISSION), CAMERA_PERMISSION_CODE
+            )
         }
 
         /** Check to see if we need to show the rationale for this permission.  */
@@ -124,7 +127,10 @@ class CameraFragment : Fragment() {
         if (!MainActivity.CameraPermissionHelper.hasCameraPermission(requireActivity())) {
             Toast.makeText(activity, "Camera permission is needed to run this application", Toast.LENGTH_LONG)
                 .show()
-            if (!MainActivity.CameraPermissionHelper.shouldShowRequestPermissionRationale(requireActivity())) {
+            if (!MainActivity.CameraPermissionHelper.shouldShowRequestPermissionRationale(
+                    requireActivity()
+                )
+            ) {
                 // Permission denied with checking "Do not ask again".
                 MainActivity.CameraPermissionHelper.launchPermissionSettings(requireActivity())
             }
