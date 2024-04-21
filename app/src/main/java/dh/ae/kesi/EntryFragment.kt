@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.google.android.gms.maps.model.LatLng
 import android.view.animation.AlphaAnimation
 import android.view.animation.Animation
 import android.widget.ImageView
@@ -19,11 +20,19 @@ import dh.ae.kesi.databinding.FragmentEntryBinding
 import java.util.Base64.getDecoder
 
 class EntryFragment : Fragment() {
+
+    public interface EntryFragmentListener{
+        fun goToMapFragment(id:String, mult:Double, lat :String, lng :String)
+    }
+
     private lateinit var binding : FragmentEntryBinding
     private var myBooleanArray:BooleanArray = booleanArrayOf(false, false, false, false)
+    private lateinit var mainActivity :EntryFragmentListener
+    private var mult :Double = 1.0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        mainActivity = activity as EntryFragmentListener
     }
 
     override fun onCreateView(
@@ -39,9 +48,8 @@ class EntryFragment : Fragment() {
         val img3String = arguments?.getString("img3")
         val img4String = arguments?.getString("img4")
         val img5String = arguments?.getString("img5")
-
-
-
+        val lat = arguments?.getString("lat")
+        val lng = arguments?.getString("long")
 
         val bitmaps = listOf(img1String, img2String, img3String, img4String, img5String).map { decodeImg(it!!) }
 
@@ -54,7 +62,8 @@ class EntryFragment : Fragment() {
                 bitmaps[1].apply {
                     //with rounded corners
                     crossfade(binding.imageView2, this)
-                    binding.imageView2.setImageBitmap(toRoundedCorners(8F))
+                    binding.imageView2.setImageBitmap(toRoundedCorners(40F))
+                    mult-=0.1
                 }
                 myBooleanArray[0] = true
             }
@@ -64,7 +73,8 @@ class EntryFragment : Fragment() {
                 bitmaps[2].apply {
                     //with rounded corners
                     crossfade(binding.imageView3, this)
-                    binding.imageView3.setImageBitmap(toRoundedCorners(8F))
+                    binding.imageView3.setImageBitmap(toRoundedCorners(40F))
+                    mult-=0.1
                 }
                 myBooleanArray[1] = true
             }
@@ -75,7 +85,8 @@ class EntryFragment : Fragment() {
                 bitmaps[3].apply {
                     //with rounded corners
                     crossfade(binding.imageView4, this)
-                    binding.imageView4.setImageBitmap(toRoundedCorners(8F))
+                    binding.imageView4.setImageBitmap(toRoundedCorners(40F))
+                    mult-=0.1
                 }
                 myBooleanArray[2] = true
             }
@@ -86,12 +97,19 @@ class EntryFragment : Fragment() {
                 bitmaps[4].apply {
                     //with rounded corners
                     crossfade(binding.imageView5, this)
-                    binding.imageView5.setImageBitmap(toRoundedCorners(8F))
+                    binding.imageView5.setImageBitmap(toRoundedCorners(40F))
+                    mult-=0.1
                 }
                 myBooleanArray[3] = true
             }
         }
 
+        binding.GuessButton.setOnClickListener {
+            Log.d("TEST", lat.toString())
+            Log.d("TEST", lng.toString())
+            Log.d("TEST", objectId.toString())
+            mainActivity.goToMapFragment(objectId!!, mult, lat!!, lng!!)
+        }
 
         return binding.root
     }

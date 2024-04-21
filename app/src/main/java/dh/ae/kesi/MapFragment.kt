@@ -63,9 +63,6 @@ class MapFragment : Fragment() {
         binding = FragmentMapBinding.inflate(inflater, container, false)
         val root = binding.root
         getPermissions()
-        zoomToCurrentLocation()
-        addMapsButtonListener()
-        addHomeButtonListener()
         val supportMapFragment =
             childFragmentManager.findFragmentById(R.id.google_map) as SupportMapFragment?
         setGoogleMaps(supportMapFragment)
@@ -73,7 +70,7 @@ class MapFragment : Fragment() {
     }
 
     private fun setGoogleMaps(supportMapFragment: SupportMapFragment?) {
-        supportMapFragment!!.getMapAsync { googleMap ->
+        supportMapFragment?.getMapAsync { googleMap ->
             gMap = googleMap
             googleMap.setMapStyle(
                 MapStyleOptions.loadRawResourceStyle(
@@ -93,6 +90,9 @@ class MapFragment : Fragment() {
                     googleMap.animateCamera(CameraUpdateFactory.newLatLngZoom(latLng, 12f))
                 }
             }
+            zoomToCurrentLocation()
+            addMapsButtonListener()
+            addHomeButtonListener()
         }
     }
 
@@ -293,7 +293,7 @@ class MapFragment : Fragment() {
         val title = "You are here"
         val icon: BitmapDescriptor =
             getIconFromName("flag")
-        gMap.addMarker(MarkerOptions().apply {
+        gMap?.addMarker(MarkerOptions().apply {
             position(currLocation)
             title(title)
             icon(icon)
