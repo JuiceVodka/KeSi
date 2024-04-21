@@ -2,6 +2,7 @@ package dh.ae.kesi
 
 import android.Manifest
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -14,13 +15,15 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.model.LatLng
 import dh.ae.kesi.databinding.ActivityMainBinding
 import dh.ae.kesi.ui.adapters.LocationAdapter
 import dh.ae.kesi.ui.fragments.ListFragment
 
-class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface {
+class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface, EntryFragment.EntryFragmentListener {
     private lateinit var binding : ActivityMainBinding
     private var fragmentTransaction : FragmentTransaction? = null
+    private var objId :String? = null
 
     /** Helper to ask camera permission.  */
     object CameraPermissionHelper {
@@ -103,6 +106,7 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
     }
     override fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?, img4: String?, img5: String?) {
         Log.d("test", "menjam fragment")
+        fragmentTransaction = supportFragmentManager.beginTransaction()
         val bundle = Bundle()
         bundle.putString("objectId", objectId)
         bundle.putString("lat", lat)
@@ -115,7 +119,34 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
 
         val entryFragment = EntryFragment()
         entryFragment.arguments = bundle
+        Log.d("MAIN", objectId.toString())
         Log.d("test", "menjam fragment")
-        fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)?.commit()
+        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
+        fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)
+        fragmentTransaction?.commit()
     }
+
+    override fun goToMapFragment(id: String, mult: Double, lat :String, lng :String) {
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        val bundle = Bundle()
+        bundle.putString("objectId", id)
+        bundle.putDouble("mult", mult)
+        bundle.putDouble("lat", lat.toDouble())
+        bundle.putDouble("lng", lng.toDouble())
+        val mapFragment = MapFragment()
+        //mapFragment.arguments = bundle
+
+        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
+        fragmentTransaction?.replace(R.id.fragmentFrame, mapFragment)
+        fragmentTransaction?.commit()
+    }
+
+    /*override fun onStart() {
+        super.onStart()
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        val mapFragment = MapFragment()
+        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
+        fragmentTransaction?.replace(R.id.fragmentFrame, mapFragment)
+        fragmentTransaction?.commit()
+    }*/
 }
