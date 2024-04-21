@@ -14,14 +14,17 @@
         android:layout_height="match_parent"
         android:name="com.google.android.gms.maps.SupportMapFragment"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/maps_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
         android:layout_alignParentBottom="true"
         android:layout_centerHorizontal="true"
-        android:text="@string/maps_button"
-        android:visibility="gone"/>
+        android:src="@drawable/uploadikona"
+        android:background="@null"
+        android:visibility="gone"
+        android:scaleType="centerInside"
+        android:contentDescription="@string/submit" />
 
     <TextView
         android:id="@+id/submitScore"
@@ -33,6 +36,7 @@
         android:fontFamily="sans-serif-light"
         android:background="@drawable/rounded_silver_score"
         android:textSize="42sp"
+        android:layout_marginBottom="10dp"
         android:textStyle="bold"
         android:textColor="#ffffff"
         android:visibility="gone"
@@ -40,12 +44,13 @@
 
     <ImageButton
         android:id="@+id/returnHomeButton"
-        android:layout_width="70dp"
-        android:layout_height="50dp"
+        android:layout_width="100dp"
+        android:layout_height="80dp"
         android:visibility="gone"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:src="@drawable/return_arrow"
+        android:src="@drawable/undo"
+        android:background="@null"
         android:scaleType="centerInside"
         android:contentDescription="@string/return_home_button" />
 
@@ -95,9 +100,6 @@
 
 
 
-
-
-
         <TextView
             android:id="@+id/item1"
             android:layout_width="match_parent"
@@ -105,6 +107,7 @@
             android:background="@drawable/rounded_gold"
             android:paddingBottom="10dp"
             android:layout_marginHorizontal="0dp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/leaderboardTitle"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -117,6 +120,7 @@
             android:background="@drawable/rounded_silver"
             android:paddingBottom="10dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/item1"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -129,6 +133,7 @@
             android:background="@drawable/rounded_bronze"
             android:paddingBottom="10dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/item2"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
@@ -140,6 +145,7 @@
             android:layout_height="wrap_content"
             android:paddingBottom="10dp"
             android:layout_marginTop="10dp"
+            android:visibility="gone"
             android:background="@drawable/rounded_corner"
             app:layout_constraintTop_toBottomOf="@+id/item3"
             app:layout_constraintStart_toStartOf="parent"
@@ -152,6 +158,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="10dp"
             android:layout_marginBottom="10dp"
+            android:visibility="gone"
             android:background="@drawable/rounded_corner"
             app:layout_constraintTop_toBottomOf="@+id/item4"
             app:layout_constraintStart_toStartOf="parent"
@@ -160,11 +167,5 @@
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
-
-
-
-
-
-
 
 </RelativeLayout>
