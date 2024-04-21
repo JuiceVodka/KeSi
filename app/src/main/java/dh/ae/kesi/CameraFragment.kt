@@ -85,6 +85,7 @@ class CameraFragment : Fragment() {
             mainInter.switchToListFragment()
         }
 
+
         return binding.root
     }
 

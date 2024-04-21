@@ -94,6 +94,14 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
         fragmentTransaction?.commit()
 
     }
+    fun switchToMapFragment() {
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        fragmentTransaction!!.setCustomAnimations(androidx.appcompat.R.anim.abc_slide_in_bottom, androidx.appcompat.R.anim.abc_slide_out_top)
+
+        val mapFragment = MapFragment()
+        fragmentTransaction?.replace(R.id.fragmentFrame, mapFragment)
+        fragmentTransaction?.commit()
+    }
     override fun switchToListFragment() {
         fragmentTransaction = supportFragmentManager.beginTransaction()
         fragmentTransaction!!.setCustomAnimations(androidx.appcompat.R.anim.abc_slide_in_bottom, androidx.appcompat.R.anim.abc_slide_out_top)
@@ -101,7 +109,6 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
         val listFragment = ListFragment()
         fragmentTransaction?.replace(R.id.fragmentFrame, listFragment)
         fragmentTransaction?.commit()
-
     }
     override fun detailClick(objectId :String?, username: String?, lat: String?, long: String?, img1: String?, img2: String?, img3: String?, img4: String?, img5: String?) {
         Log.d("test", "menjam fragment")

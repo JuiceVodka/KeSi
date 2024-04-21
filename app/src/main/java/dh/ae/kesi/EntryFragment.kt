@@ -6,24 +6,19 @@ import android.graphics.Canvas
 import android.graphics.Path
 import android.graphics.RectF
 import android.os.Bundle
-import android.text.style.UpdateLayout
 import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.parse.GetCallback
-import com.parse.ParseException
-import com.parse.ParseObject
-import com.parse.ParseQuery
+import android.view.animation.AlphaAnimation
+import android.view.animation.Animation
+import android.widget.ImageView
 
 import dh.ae.kesi.databinding.FragmentEntryBinding
 import java.util.Base64.getDecoder
 
 class EntryFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
     private lateinit var binding : FragmentEntryBinding
     private var myBooleanArray:BooleanArray = booleanArrayOf(false, false, false, false)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -48,8 +43,9 @@ class EntryFragment : Fragment() {
 
 
 
-
         val bitmaps = listOf(img1String, img2String, img3String, img4String, img5String).map { decodeImg(it!!) }
+
+        Log.d("test", objectId.toString())
 
         binding.imageView1.setImageBitmap(bitmaps[0])
 
@@ -57,7 +53,7 @@ class EntryFragment : Fragment() {
             if (!myBooleanArray[0]) {
                 bitmaps[1].apply {
                     //with rounded corners
-                    binding.imageView2.setImageBitmap(this)
+                    crossfade(binding.imageView2, this)
                     binding.imageView2.setImageBitmap(toRoundedCorners(8F))
                 }
                 myBooleanArray[0] = true
@@ -67,7 +63,7 @@ class EntryFragment : Fragment() {
             if (!myBooleanArray[1]) {
                 bitmaps[2].apply {
                     //with rounded corners
-                    binding.imageView3.setImageBitmap(this)
+                    crossfade(binding.imageView3, this)
                     binding.imageView3.setImageBitmap(toRoundedCorners(8F))
                 }
                 myBooleanArray[1] = true
@@ -78,7 +74,7 @@ class EntryFragment : Fragment() {
             if (!myBooleanArray[2]) {
                 bitmaps[3].apply {
                     //with rounded corners
-                    binding.imageView4.setImageBitmap(this)
+                    crossfade(binding.imageView4, this)
                     binding.imageView4.setImageBitmap(toRoundedCorners(8F))
                 }
                 myBooleanArray[2] = true
@@ -89,12 +85,14 @@ class EntryFragment : Fragment() {
             if (!myBooleanArray[3]) {
                 bitmaps[4].apply {
                     //with rounded corners
-                    binding.imageView5.setImageBitmap(this)
+                    crossfade(binding.imageView5, this)
                     binding.imageView5.setImageBitmap(toRoundedCorners(8F))
                 }
                 myBooleanArray[3] = true
             }
         }
+
+
         return binding.root
     }
     private fun decodeImg(img: String): Bitmap{
@@ -125,6 +123,26 @@ class EntryFragment : Fragment() {
         // draw the rounded corners bitmap on canvas
         canvas.drawBitmap(this,0f,0f,null)
         return bitmap
+    }
+
+    private fun crossfade(imageView: ImageView,bitmap: Bitmap) {
+        val fadeIn = AlphaAnimation(0f, 1f)
+        fadeIn.duration = 1000
+        val fadeOut = AlphaAnimation(1f, 0f)
+        fadeOut.duration = 1000
+
+        fadeIn.setAnimationListener(object : Animation.AnimationListener {
+            override fun onAnimationStart(animation: Animation?) {}
+
+            override fun onAnimationEnd(animation: Animation?) {
+                imageView.setImageBitmap(bitmap)
+                //imageView.startAnimation(fadeOut)
+            }
+
+            override fun onAnimationRepeat(animation: Animation?) {}
+        })
+        imageView.startAnimation(fadeOut)
+        imageView.startAnimation(fadeIn)
     }
 
 

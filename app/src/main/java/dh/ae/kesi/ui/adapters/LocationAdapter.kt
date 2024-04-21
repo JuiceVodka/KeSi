@@ -49,7 +49,7 @@ class LocationAdapter(private val shrooms: List<ParseObject>?) : RecyclerView.Ad
                 }catch(e: ClassCastException){
                     throw ClassCastException(v!!.context.toString() + " doesnt implement listListener")
                 }
-                clickListener?.detailClick(shrooms?.get(i)?.getString("objectId"), shrooms?.get(i)?.getString("username"), shrooms?.get(i)?.getString("lat"),shrooms?.get(i)?.getString("long"),shrooms?.get(i)?.getString("img1"),shrooms?.get(i)?.getString("img2"),shrooms?.get(i)?.getString("img3"),shrooms?.get(i)?.getString("img4"),shrooms?.get(i)?.getString("img5"))
+                clickListener?.detailClick(shrooms?.get(i)?.objectId, shrooms?.get(i)?.getString("username"), shrooms?.get(i)?.getString("lat"),shrooms?.get(i)?.getString("long"),shrooms?.get(i)?.getString("img1"),shrooms?.get(i)?.getString("img2"),shrooms?.get(i)?.getString("img3"),shrooms?.get(i)?.getString("img4"),shrooms?.get(i)?.getString("img5"))
             }
         })
     }
