@@ -15,11 +15,12 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentTransaction
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.maps.model.LatLng
 import dh.ae.kesi.databinding.ActivityMainBinding
 import dh.ae.kesi.ui.adapters.LocationAdapter
 import dh.ae.kesi.ui.fragments.ListFragment
 
-class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface {
+class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener, CameraFragment.CamFragmentInterface, EntryFragment.EntryFragmentListener {
     private lateinit var binding : ActivityMainBinding
     private var fragmentTransaction : FragmentTransaction? = null
     private var objId :String? = null
@@ -118,9 +119,34 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
 
         val entryFragment = EntryFragment()
         entryFragment.arguments = bundle
-
+        Log.d("MAIN", objectId.toString())
         Log.d("test", "menjam fragment")
+        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
         fragmentTransaction?.replace(R.id.fragmentFrame, entryFragment)
         fragmentTransaction?.commit()
     }
+
+    override fun goToMapFragment(id: String, mult: Double, lat :String, lng :String) {
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        val bundle = Bundle()
+        bundle.putString("objectId", id)
+        bundle.putDouble("mult", mult)
+        bundle.putDouble("lat", lat.toDouble())
+        bundle.putDouble("lng", lng.toDouble())
+        val mapFragment = MapFragment()
+        //mapFragment.arguments = bundle
+
+        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
+        fragmentTransaction?.replace(R.id.fragmentFrame, mapFragment)
+        fragmentTransaction?.commit()
+    }
+
+    /*override fun onStart() {
+        super.onStart()
+        fragmentTransaction = supportFragmentManager.beginTransaction()
+        val mapFragment = MapFragment()
+        fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
+        fragmentTransaction?.replace(R.id.fragmentFrame, mapFragment)
+        fragmentTransaction?.commit()
+    }*/
 }
