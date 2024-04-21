@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import android.widget.AbsSpinner
 import android.widget.ProgressBar
 import androidx.annotation.UiContext
+import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.Fragment
 import dh.ae.kesi.R
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -19,14 +20,21 @@ import kotlinx.coroutines.withContext
 
 class ListFragment : Fragment() {
 
+    public interface ListFragmentListener{
+        fun goToCameraFragment()
+    }
+
     private var recyclerView: RecyclerView? = null
     private var layoutManager: RecyclerView.LayoutManager? = null
     private var adapter: RecyclerView.Adapter<*>? = null
     private var spinner :ProgressBar? = null
+    private var backButton :AppCompatButton? = null
     private val locationRepository = LocationRepository()
+    private lateinit var mainActivity :ListFragmentListener
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mainActivity = activity as ListFragmentListener
     }
 
     override fun onAttach(context: Context) {
@@ -42,6 +50,8 @@ class ListFragment : Fragment() {
         spinner = view?.findViewById(R.id.progress_loader)
         layoutManager = LinearLayoutManager(view?.context)
         recyclerView?.layoutManager = layoutManager
+        backButton = view.findViewById(R.id.backButton)
+        setListener()
         locationRepository.getAllLocations { _locations, _ ->
             // Update the UI with the loaded locations
             _locations?.let {
@@ -73,6 +83,12 @@ class ListFragment : Fragment() {
         recyclerView?.visibility = View.VISIBLE
         spinner?.visibility = View.GONE
 
+    }
+
+    fun setListener(){
+        backButton?.setOnClickListener {
+            mainActivity.goToCameraFragment()
+        }
     }
 
 }

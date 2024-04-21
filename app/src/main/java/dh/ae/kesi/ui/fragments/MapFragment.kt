@@ -37,7 +37,7 @@ import com.parse.ParseQuery
 import dh.ae.kesi.databinding.FragmentMapBinding
 import kotlin.math.ln
 import dh.ae.kesi.R
-import dh.ae.kesi.databinding.FragmentMapBinding
+
 
 class MapFragment : Fragment() {
 
