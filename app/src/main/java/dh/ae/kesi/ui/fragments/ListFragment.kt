@@ -60,7 +60,7 @@ class ListFragment : Fragment() {
                 Log.d("test", _locations.toString())
 
                 val sharedPreference =  activity?.getSharedPreferences("User_data", Context.MODE_PRIVATE)
-                for (i in 0.._locations.size-1){
+                for (i in 0.._locations.size-3){
                     val posterId = _locations.get(i).objectId
                     val posterValInPrefs = sharedPreference?.getBoolean(posterId, false)
                     if (posterValInPrefs == true){

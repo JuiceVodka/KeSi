@@ -134,7 +134,7 @@ class MainActivity : AppCompatActivity(), LocationAdapter.locationClickListener,
         bundle.putDouble("lat", lat.toDouble())
         bundle.putDouble("lng", lng.toDouble())
         val mapFragment = MapFragment()
-        //mapFragment.arguments = bundle
+        mapFragment.arguments = bundle
 
         fragmentTransaction?.setCustomAnimations(androidx.appcompat.R.anim.abc_fade_in, androidx.appcompat.R.anim.abc_fade_out)
         fragmentTransaction?.replace(R.id.fragmentFrame, mapFragment)
