@@ -12,33 +12,69 @@
         android:layout_height="match_parent"
         android:id="@+id/firstLayout">
 
-        <!-- TODO: This should be an image -->
-        <androidx.appcompat.widget.AppCompatButton
-            android:textColor="@color/black"
-            android:textAllCaps="false"
-            android:id="@+id/takePic"
-            android:layout_width="80dp"
-            android:layout_height="40dp"
-            android:textSize="16dp"
-
-            android:text="TPI"
-            android:layout_marginTop="20dp"
+        <!-- Background Image -->
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:src="@drawable/bkg3"
+            android:scaleType="centerCrop"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintEnd_toEndOf="parent" />
 
-            />
-
-        <androidx.appcompat.widget.AppCompatButton
-            android:id="@+id/goToListFragment"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
-            android:text="locations"
+        <ImageView
+            android:id="@+id/takePic"
+            android:layout_width="103dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="10dp"
+            android:src="@drawable/take_pic_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.149"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"/>
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.933" />
+
+        <ImageView
+            android:id="@+id/goToListFragment"
+            android:layout_width="72dp"
+            android:layout_height="72dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginBottom="44dp"
+            android:src="@drawable/list_fragment_icon"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.747"
+            app:layout_constraintStart_toEndOf="@+id/takePic" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#20000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <ImageView
+            android:id="@+id/logoImage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="136dp"
+            android:src="@drawable/logo_white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.496"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+
+
+
     </androidx.constraintlayout.widget.ConstraintLayout>
+
 
     <!-- Layout for taking additional pictures and posting your picture -->
     <androidx.constraintlayout.widget.ConstraintLayout

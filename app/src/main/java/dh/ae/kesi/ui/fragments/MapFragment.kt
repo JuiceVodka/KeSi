@@ -220,9 +220,9 @@ class MapFragment : Fragment() {
                 textViews[i].visibility = View.GONE
             }
             else {
-            textViews[i].text = getString(R.string.leaderboardItem,  leaderboardCurr[i].userName, leaderboardCurr[i].score.toString())
-            textViews[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
-            textViews[i].textSize = textSize
+                textViews[i].text = getString(R.string.leaderboardItem,  leaderboardCurr[i].userName, leaderboardCurr[i].score.toString())
+                textViews[i].setTextColor(ContextCompat.getColor(requireContext(), R.color.black))
+                textViews[i].textSize = textSize
 
             }
 
