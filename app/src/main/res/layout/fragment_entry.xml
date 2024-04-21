@@ -3,6 +3,15 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:src="@drawable/bkg4"
+        android:scaleType="centerCrop"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
     <HorizontalScrollView
         android:id="@+id/HorizontalImageScrollView"
         android:layout_width="0dp"
@@ -32,7 +41,8 @@
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="20dp"
-                android:src="@drawable/icons8_idea_128"
+                android:src="@drawable/icons8_idea_128_w"
+                android:backgroundTint="@color/white"
                 android:scaleType="centerInside"
                 />
             <ImageView
@@ -40,8 +50,10 @@
                 android:layout_width="300dp"
                 android:layout_height="match_parent"
                 android:layout_marginEnd="55dp"
-                android:src="@drawable/icons8_idea_128"
-                android:scaleType="centerInside"/>
+                android:src="@drawable/icons8_idea_128_w"
+                android:scaleType="centerInside"
+                android:backgroundTint="@color/white"
+                />
 
             <!--<ImageView
                 android:id="@+id/imageView4"
@@ -69,7 +81,7 @@
         android:layout_marginTop="44dp"
         android:background="@drawable/back"
         android:orientation="vertical"
-        android:padding="10dp"
+        android:padding="12dp"
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.496"
@@ -82,7 +94,8 @@
             android:layout_height="wrap_content"
             android:text="@string/deduction_description"
             android:textSize="15sp"
-            app:drawableLeftCompat="@drawable/icons8_idea_24___" />
+            app:drawableLeftCompat="@drawable/icons8_idea_16_w"
+            android:textColor="@color/white"/>
 
         <TextView
             android:id="@+id/deduction"
@@ -90,7 +103,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="center"
             android:gravity="center"
-            android:text="Deduction: 0%" />
+            android:text="Deduction: 0%"
+            android:textColor="@color/white"/>
     </LinearLayout>
 
     <Button
@@ -99,7 +113,7 @@
         android:layout_height="100dp"
         android:layout_gravity="center"
         android:background="@drawable/map_pointer"
-        android:backgroundTint="@color/black"
+        android:backgroundTint="@color/white"
         android:drawableStart="@drawable/map_pointer"
         android:drawablePadding="5dp"
         android:paddingLeft="40dp"
